@@ -43,6 +43,36 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     }
 })
 
+
+// Login User
+router.post('/login', async (req: express.Request, res: express.Response) => {
+    const {username, password} = req.body
+
+    // Check if username and password is provided
+    if (!username || !password) {
+        return res.status(400).json({error: "Username or Password not present"})
+    }
+
+    try {
+        // Get the User
+        const user = await User.findOne({username})
+
+        // Check if user exists
+        if (!user) res.status(401).json({error: "Login not succesful - User not found."})
+
+        // Validate Password
+        const validPassword = await bcrypt.compare(password, user.password)
+        if (!validPassword){
+            res.status(401).json({error: "Login not successful - Invalid Password."})
+        } else {
+            const {password, ...rest} = user._doc;
+            res.status(200).json(rest)
+        }
+    } catch (err) {
+        res.status(400).json({error: err})
+    }
+})
+
 // Edit User
 router.put('/:id', async (req: express.Request, res: express.Response) => {
     try {

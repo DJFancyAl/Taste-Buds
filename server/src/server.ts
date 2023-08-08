@@ -15,6 +15,7 @@ app.get('/', (req: express.Request, res: express.Response) => {
 // Controllers
 app.use('/users', require('./controllers/users'))
 app.use('/groups', require('./controllers/groups'))
+app.use('/days', require('./controllers/days'))
 
 // Wildcard Route
 app.get('*', (req: express.Request, res: express.Response) => {

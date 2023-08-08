@@ -14,3 +14,4 @@ connect(mongoURI)
 
 export const User = require('./users.ts')
 export const Group = require('./groups.ts')
+export const Day = require('./days.ts')

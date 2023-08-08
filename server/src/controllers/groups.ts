@@ -36,15 +36,15 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     }
 })
 
-// // Edit User
-// router.put('/:id', async (req: express.Request, res: express.Response) => {
-//     try {
-//         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body)
-//         res.status(200).json("User Updated!")
-//     } catch (err) {
-//         res.status(400).json({error: err})
-//     }
-// })
+// Edit Group
+router.put('/:id', async (req: express.Request, res: express.Response) => {
+    try {
+        const updatedGroup = await Group.findByIdAndUpdate(req.params.id, req.body)
+        res.status(200).json("Group Updated!")
+    } catch (err) {
+        res.status(400).json({error: err})
+    }
+})
 
 // Delete Member
 router.put('/:groupId/:userId', async (req: express.Request, res: express.Response) => {
@@ -70,6 +70,39 @@ router.put('/:groupId/:userId', async (req: express.Request, res: express.Respon
     }
 })
 
+// Add Item
+router.post('/:id/items', async (req: express.Request, res: express.Response) => {
+    try {
+        const foundGroup = await Group.findByIdAndUpdate(
+            req.params.id,
+            {
+                $push: {
+                    'items': req.body
+                }
+            }
+        )
+        res.status(200).json("Item Created!")
+    } catch (err) {
+        res.status(400).json({error: err})
+    }
+})
+
+// Delete Item
+router.delete('/:id/items', async (req: express.Request, res: express.Response) => {
+    try {
+        const foundGroup = await Group.findByIdAndUpdate(
+            req.params.id,
+            {
+                $pull: {
+                    'items': req.body
+                }
+            }
+        )
+        res.status(200).json("Item Deleted!")
+    } catch (err) {
+        res.status(400).json({error: err})
+    }
+})
 
 // Wildcard
 router.get('*', (req: express.Request, res: express.Response) => {
