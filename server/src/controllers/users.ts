@@ -8,7 +8,8 @@ const router = require('express').Router()
 // GET All Users
 router.get('/', async (req: express.Request, res: express.Response) => {
     try {
-        res.status(200).json("All Users Rt.")
+        const foundUsers = await User.find()
+        res.status(200).json(foundUsers)
     } catch (err) {
         res.status(400).json({error: err})
     }
@@ -42,10 +43,20 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     }
 })
 
-// Delete User
-router.Delete('/:id', async (req: express.Request, res: express.Response) => {
+// Edit User
+router.put('/:id', async (req: express.Request, res: express.Response) => {
     try {
-        const deletedUser = await User.findByIdAndDelete({_id: req.params.id})
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body)
+        res.status(200).json("User Updated!")
+    } catch (err) {
+        res.status(400).json({error: err})
+    }
+})
+
+// Delete User
+router.delete('/:id', async (req: express.Request, res: express.Response) => {
+    try {
+        const deletedUser = await User.findByIdAndDelete(req.params.id)
         res.status(200).json("User deleted!")
     } catch (err) {
         res.status(400).json({error: err})

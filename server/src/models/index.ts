@@ -13,3 +13,4 @@ connect(mongoURI)
   .catch(e=>console.log(e));
 
 export const User = require('./users.ts')
+export const Group = require('./groups.ts')
