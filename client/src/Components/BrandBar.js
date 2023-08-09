@@ -3,11 +3,9 @@ import { ThemeContext } from '../Context/ThemeContext';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -79,9 +77,9 @@ const BrandBar = () => {
               >
                   <MenuIcon />
               </IconButton>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                  Taste Buds
-              </Typography>
+              <Box sx={{ flexGrow: 1}}>
+                <img src="/logo.png" alt="Taste Buds Logo" height={40} />
+              </Box>
               <Avatar variant='rounded' alt="Al Bluemle" src="/static/images/avatar/1.jpg" />
               <FormControlLabel onClick={handleSwitch} control={<MaterialUISwitch sx={{ ml:4, my: 1 }} defaultChecked />} />
               </Toolbar>

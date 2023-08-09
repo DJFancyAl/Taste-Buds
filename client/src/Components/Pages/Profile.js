@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react'
+import { UserContext } from '../../Context/UserContext' 
 import { format } from 'date-fns'
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -9,44 +9,34 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import axios from 'axios';
 
-const Profile = ( { user } ) => {
-    const {username, date, name, pic} = user
+const Profile = () => {
+    const {user, setUser} = useContext(UserContext)
+    const {_id, username, date, name, pic} = user
     const inputDate = new Date(date);
     const [formData, setFormData] = useState({});
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null)
+
+    const handleFileChange = (e) => { setSelectedFile(e.target.files[0]) };
+
+    const handleUpload = async () => {
+        const formData = new FormData();
+        formData.append('profileImage', selectedFile);
+
+        const response = await axios.post(`http://localhost:5000/users/${_id}/upload`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            }
+        })
+
+        setUser(response.data)
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
     }
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        setSelectedFile(file);
-    };
-
-    const handleUpload = async () => {
-        if (selectedFile) {
-          const formData = new FormData();
-          formData.append('profilePhoto', selectedFile);
-    
-          try {
-            const response = await axios.post('/upload', formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-    
-            console.log('File uploaded successfully:', response.data);
-          } catch (error) {
-            console.error('Error uploading file:', error);
-          }
-        }
-      };
 
     useEffect(() => {
         setFormData(user)

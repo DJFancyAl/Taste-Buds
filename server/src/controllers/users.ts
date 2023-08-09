@@ -2,8 +2,20 @@
 import express from 'express';
 import { User } from '../models';
 import bcrypt from 'bcrypt';
+import multer from 'multer';
+import path from 'path';
 const router = require('express').Router()
 
+
+// Set up Multer for handling file uploads
+const storage = multer.diskStorage({
+    destination: path.join(__dirname, 'uploads'),
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname));
+    }
+  });
+  
+const upload = multer({ storage });
 
 // GET All Users
 router.get('/', async (req: express.Request, res: express.Response) => {
@@ -71,6 +83,21 @@ router.post('/login', async (req: express.Request, res: express.Response) => {
         }
     } catch (err) {
         res.status(400).json({error: err})
+    }
+})
+
+// Upload Profile
+router.post('/:id/upload', upload.single('profileImage'), async (req: express.Request, res: express.Response) => {
+    try {
+        if (req.file) {
+                const updatedUser = await User.findByIdAndUpdate(req.params.id, {pic: req.file.filename})
+                const {password, ...rest} = updatedUser._doc
+                res.status(200).json(rest);
+            } else {
+                res.status(400).json({ error: 'File upload failed' });
+            }
+    } catch (e) {
+        res.status(400).json({ error: e });
     }
 })
 
