@@ -2,7 +2,7 @@
 import { CallbackError, Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-// Author Schema
+// User Schema
 const userSchema = new Schema({
     username: {
         type: String,

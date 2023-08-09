@@ -1,11 +1,19 @@
 // Dependencies
 import express from 'express';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 require('dotenv').config()
 
 // Initialize App
 const app = express();
 app.use(bodyParser.json());
+app.use(cors())
+// app.use(function(req: express.Request, res: express.Response, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+//     // res.header("Access-Control-Allow-Headers", "Origin, x-access-token, X-Requested-With, Content-Type, Accept, Authorization");
+//     next();
+// });
 
 // Home Route
 app.get('/', (req: express.Request, res: express.Response) => {

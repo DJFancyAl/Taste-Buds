@@ -37,7 +37,8 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     // Create User
     try {
         const createdUser = await User.create({username, password})
-        res.status(200).json(createdUser)
+        const {password: string, ...rest} = createdUser._doc
+        res.status(200).json(rest)
     } catch (err) {
         res.status(400).json({error: err})
     }
