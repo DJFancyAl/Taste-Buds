@@ -17,7 +17,7 @@ const Start = () => {
                 Welcome to "Taste Buds" - the ultimate solution for indecisive groups everywhere! Tired of guessing what your wife wants for dinner? Sick of your roommate ordering pizza every night? Constantly forgetting about that Sushi place down the street? WORRY NOT - We're here to help...
             </Typography>
             <Link to="/register">
-              <Button variant="outlined" size='large' endIcon={<HowToRegIcon />}>Create a New Account</Button>
+              <Button variant="contained" size='large' endIcon={<HowToRegIcon />}>Create a New Account</Button>
             </Link>
             <Divider sx={{my: 5}}>OR</Divider>
             <LoginForm />

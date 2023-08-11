@@ -1,6 +1,6 @@
 // Dependencies
 import express from 'express';
-import { Group } from '../models';
+import { Group, User } from '../models';
 const router = require('express').Router()
 
 
@@ -12,6 +12,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
         res.status(400).json({error: err})
     }
 })
+
 
 // Create New Group
 router.post('/', async (req: express.Request, res: express.Response) => {
@@ -30,11 +31,24 @@ router.post('/', async (req: express.Request, res: express.Response) => {
             type: type
         }
         const createdGroup = await Group.create(newGroup)
+        const updatedUser = await User.findByIdAndUpdate(member, {group: createdGroup._id})
         res.status(200).json(createdGroup)
     } catch (err) {
         res.status(400).json({error: err})
     }
 })
+
+
+// Get One Group
+router.get('/:id', async (req: express.Request, res: express.Response) => {
+    try {
+        const foundGroup = await Group.findById(req.params.id).populate({path: 'members', select: 'name username date bio pic'}).populate({path: 'requests', select: 'name username'}).select('-days')
+        res.status(200).json(foundGroup)
+    } catch (err) {
+        res.status(400).json({error: err})
+    }
+})
+
 
 // Edit Group
 router.put('/:id', async (req: express.Request, res: express.Response) => {
@@ -46,16 +60,28 @@ router.put('/:id', async (req: express.Request, res: express.Response) => {
     }
 })
 
+
+// Create Request
+router.get('/request/:budId/:userId', async (req: express.Request, res: express.Response) => {
+    try {
+        const foundGroup = await User.findById(req.params.budId).select('group')
+        const updatedGroup = await Group.findByIdAndUpdate(
+            foundGroup.group,
+            {$addToSet: {'requests': req.params.userId}}
+        )
+            res.status(200).json("Request Created!")
+        } catch (err) {
+        res.status(400).json({error: err})
+    }
+})
+
+
 // Delete Member
 router.put('/:groupId/:userId', async (req: express.Request, res: express.Response) => {
     try {
         const foundGroup = await Group.findByIdAndUpdate(
             req.params.groupId,
-            {
-                $pull: {
-                    'members': req.params.userId
-                }
-            },
+            {$pull: {'members': req.params.userId}},
             { new: true }
         )
 

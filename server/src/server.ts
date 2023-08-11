@@ -8,12 +8,7 @@ require('dotenv').config()
 const app = express();
 app.use(bodyParser.json());
 app.use(cors())
-// app.use(function(req: express.Request, res: express.Response, next) {
-//     res.header("Access-Control-Allow-Origin", "*");
-//     res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
-//     // res.header("Access-Control-Allow-Headers", "Origin, x-access-token, X-Requested-With, Content-Type, Accept, Authorization");
-//     next();
-// });
+app.use(express.static('uploads'));
 
 // Home Route
 app.get('/', (req: express.Request, res: express.Response) => {

@@ -1,15 +1,21 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { UserContext } from '../../Context/UserContext' 
+import { Outlet, useNavigate } from 'react-router-dom';
 import BrandBar from "../BrandBar"
-import Profile from "./Profile"
-
 const User = () => {
+  const navigate = useNavigate()
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")))
+
+  useEffect(() => {
+    if (!user.username) {
+      navigate('/')
+    }
+  }, [user])
 
   return (
       <UserContext.Provider value={{user, setUser}}>
         <BrandBar />
-        <Profile user={user} />
+        <Outlet />
       </UserContext.Provider>
   )
 }

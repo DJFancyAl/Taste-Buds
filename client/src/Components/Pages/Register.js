@@ -49,7 +49,7 @@ const Register = () => {
         <Container sx={{minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: 5}}>
             <Box>
                 <Typography variant="h2" gutterBottom>Time to Set Up an Account.</Typography>
-                <Typography variant="subtitle1" gutterBottom sx={{mb:5}}>
+                <Typography variant="subtitle2" gutterBottom sx={{mb:5}}>
                     First create a username and password. Then we'll find your Buds!
                 </Typography>
                 <Divider sx={{my: 5}} />
@@ -92,7 +92,7 @@ const Register = () => {
                         value={formData.confirmPassword}
                         onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                         />
-                    <Button type='submit' variant="outlined" endIcon={<AppRegistrationIcon />}>Login</Button>
+                    <Button type='submit' variant="contained" endIcon={<AppRegistrationIcon />}>Create Account</Button>
                 </Box>
             </Box>
             <Snackbar

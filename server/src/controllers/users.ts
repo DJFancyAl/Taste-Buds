@@ -9,7 +9,7 @@ const router = require('express').Router()
 
 // Set up Multer for handling file uploads
 const storage = multer.diskStorage({
-    destination: path.join(__dirname, 'uploads'),
+    destination: path.join(__dirname, '../../uploads'),
     filename: (req, file, cb) => {
       cb(null, Date.now() + path.extname(file.originalname));
     }
@@ -71,7 +71,9 @@ router.post('/login', async (req: express.Request, res: express.Response) => {
         const user = await User.findOne({username})
 
         // Check if user exists
-        if (!user) res.status(401).json({error: "Login not succesful - User not found."})
+        if (!user) {
+            res.status(401).json({error: "Login not succesful - User not found."})
+        }
 
         // Validate Password
         const validPassword = await bcrypt.compare(password, user.password)
@@ -85,6 +87,29 @@ router.post('/login', async (req: express.Request, res: express.Response) => {
         res.status(400).json({error: err})
     }
 })
+
+
+// Search for User
+router.get('/search/:name', async (req: express.Request, res: express.Response) => {
+    try {
+        const foundUsers = await User.find({
+            $or: [
+              { username: req.params.name },
+              { name: req.params.name }
+            ],
+            // group: { $exists: true }
+          }).select('username name group')
+
+        if(foundUsers.length === 0) {
+            res.status(400).json({error: 'User Not Found'})
+        } else {
+            res.status(200).json(foundUsers)
+        }
+    } catch(err) {
+        res.status(400).json({error: err})
+    }
+})
+
 
 // Upload Profile
 router.post('/:id/upload', upload.single('profileImage'), async (req: express.Request, res: express.Response) => {
@@ -101,11 +126,24 @@ router.post('/:id/upload', upload.single('profileImage'), async (req: express.Re
     }
 })
 
+// Get Profile Image
+router.get('/:id/profile', async (req: express.Request, res: express.Response) => {
+    try {
+        const foundUser = await User.findById(req.params.id)
+        const file = path.join(__dirname, '../../uploads', foundUser.pic);
+        res.sendFile(file)
+    } catch (e) {
+        console.log(e)
+        res.status(400).json({ error: e });
+    }
+})
+
 // Edit User
 router.put('/:id', async (req: express.Request, res: express.Response) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body)
-        res.status(200).json("User Updated!")
+        const {password, ...rest} = updatedUser._doc
+        res.status(200).json(rest);
     } catch (err) {
         res.status(400).json({error: err})
     }

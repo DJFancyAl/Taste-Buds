@@ -1,5 +1,7 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { ThemeContext } from '../Context/ThemeContext';
+import { UserContext } from '../Context/UserContext';
+import NavBar from './NavBar';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -58,12 +60,31 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   }));
 
 const BrandBar = () => {
+  // State
   const {darkMode, setDarkMode} = useContext(ThemeContext)
+  const {user, setUser} = useContext(UserContext)
+  const [open, setOpen] = useState(false)
 
+  // Dark Mode Switch
   const handleSwitch = () => {
     setDarkMode(!darkMode)
   }
 
+  // Handle Logout
+  const logout = () => {
+    localStorage.removeItem('user')
+    setUser({})
+  }
+
+
+  // Toggle NavBar
+  const toggleDrawer = (e) => {
+      if (e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
+        return;
+      }
+      setOpen(!open)
+  };
+  
   return (
       <Box sx={{ flexGrow: 1, pb: 3 }}>
           <AppBar position="static">
@@ -74,16 +95,20 @@ const BrandBar = () => {
                   color="inherit"
                   aria-label="menu"
                   sx={{ mr: 2 }}
+                  onClick={toggleDrawer}
               >
                   <MenuIcon />
               </IconButton>
               <Box sx={{ flexGrow: 1}}>
                 <img src="/logo.png" alt="Taste Buds Logo" height={40} />
               </Box>
-              <Avatar variant='rounded' alt="Al Bluemle" src="/static/images/avatar/1.jpg" />
+              <IconButton onClick={logout}>
+                <Avatar variant='rounded' alt={user.username} src="/static/images/avatar/1.jpg" />
+              </IconButton>
               <FormControlLabel onClick={handleSwitch} control={<MaterialUISwitch sx={{ ml:4, my: 1 }} defaultChecked />} />
               </Toolbar>
           </AppBar>
+          <NavBar open={open} toggleDrawer={toggleDrawer} logout={logout} />
       </Box>
   )
 }
