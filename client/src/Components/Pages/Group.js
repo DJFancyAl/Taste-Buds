@@ -7,14 +7,14 @@ import GroupInfo from '../GroupInfo';
 import LinkGroup from '../LinkGroup';
 
 const Group = () => {
-  const { user } = useContext(UserContext)
+  const { user, setUser } = useContext(UserContext)
 
   return (
-    <Container>
+    <Container sx={{pb: 5}}>
       <Typography variant="h2" gutterBottom>Your Group</Typography>
       <Divider sx={{ my: 4 }} />
       {user.group ? 
-        <GroupInfo group={user.group} /> :
+        <GroupInfo group={user.group} user={user} setUser={setUser} /> :
         <LinkGroup userId={user._id} />
       }
     </Container>

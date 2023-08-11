@@ -14,7 +14,7 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const [snackOpen, setSnackOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [alert, setAlert] = useState({severity: '', message:''})
+    const [alert, setAlert] = useState({severity: 'success', message:''})
     const [formData, setFormData] = useState({username: '', password: ''})
 
     // Login Submit

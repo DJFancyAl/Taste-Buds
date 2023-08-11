@@ -83,6 +83,10 @@ router.put('/:groupId/:userId', async (req: express.Request, res: express.Respon
             req.params.groupId,
             { $pull: {'requests': req.params.userId}, $addToSet: {'members': req.params.userId} }
         )
+        const foundUser = await User.findByIdAndUpdate(
+            req.params.userId,
+            {group: req.params.groupId}
+        )
         res.status(200).json(foundGroup)
     } catch (err) {
         res.status(400).json({error: err})
@@ -92,17 +96,13 @@ router.put('/:groupId/:userId', async (req: express.Request, res: express.Respon
 // Delete Member
 router.delete('/:groupId/:userId', async (req: express.Request, res: express.Response) => {
     try {
-        const foundGroup = await Group.findByIdAndUpdate(
-            req.params.groupId,
-            {$pull: {'members': req.params.userId}},
-            { new: true }
-        )
-
+        const foundGroup = await Group.findByIdAndUpdate(req.params.groupId, {$pull: {'members': req.params.userId}})
+        const foundUser = await User.findByIdAndUpdate(req.params.userId, {'group': null}, { new: true }).select('-password')
         if (foundGroup.members.length === 0) {
             await Group.findByIdAndDelete(req.params.groupId)
-            res.status(200).json("Group deleted!")
+            res.status(200).json(foundUser)
         } else {
-            res.status(200).json("Member deleted!")
+            res.status(200).json(foundUser)
         }
     } catch (err) {
         res.status(400).json({error: err})
@@ -112,14 +112,7 @@ router.delete('/:groupId/:userId', async (req: express.Request, res: express.Res
 // Add Item
 router.post('/:id/items', async (req: express.Request, res: express.Response) => {
     try {
-        const foundGroup = await Group.findByIdAndUpdate(
-            req.params.id,
-            {
-                $push: {
-                    'items': req.body
-                }
-            }
-        )
+        const foundGroup = await Group.findByIdAndUpdate(req.params.id,{$push: {'items': req.body}})
         res.status(200).json("Item Created!")
     } catch (err) {
         res.status(400).json({error: err})
@@ -129,14 +122,7 @@ router.post('/:id/items', async (req: express.Request, res: express.Response) =>
 // Delete Item
 router.delete('/:id/items', async (req: express.Request, res: express.Response) => {
     try {
-        const foundGroup = await Group.findByIdAndUpdate(
-            req.params.id,
-            {
-                $pull: {
-                    'items': req.body
-                }
-            }
-        )
+        const foundGroup = await Group.findByIdAndUpdate(req.params.id,{$pull: {'items': req.body}})
         res.status(200).json("Item Deleted!")
     } catch (err) {
         res.status(400).json({error: err})
