@@ -76,8 +76,21 @@ router.get('/request/:budId/:userId', async (req: express.Request, res: express.
 })
 
 
-// Delete Member
+// Add Member
 router.put('/:groupId/:userId', async (req: express.Request, res: express.Response) => {
+    try {
+        const foundGroup = await Group.findByIdAndUpdate(
+            req.params.groupId,
+            { $pull: {'requests': req.params.userId}, $addToSet: {'members': req.params.userId} }
+        )
+        res.status(200).json(foundGroup)
+    } catch (err) {
+        res.status(400).json({error: err})
+    }
+})
+
+// Delete Member
+router.delete('/:groupId/:userId', async (req: express.Request, res: express.Response) => {
     try {
         const foundGroup = await Group.findByIdAndUpdate(
             req.params.groupId,

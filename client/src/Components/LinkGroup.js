@@ -124,7 +124,7 @@ const LinkGroup = ( { userId } ) => {
     const waitMessage = (
         <Box sx={{backgroundColor: theme.palette.primary.main, p: 3, mx: 'auto', border: `1px solid ${theme.palette.secondary.main}`}}>
             <Typography variant="h5" gutterBottom>Waiting to join group!</Typography>
-            <Typography variant="body1" gutterBottom>Once a group member has approve your request, you will be able to share your tastes with you bud(s)!</Typography>
+            <Typography variant="body2" gutterBottom>Once a group member has approve your request, you will be able to share your tastes with you bud(s)!</Typography>
         </Box>
     )
 

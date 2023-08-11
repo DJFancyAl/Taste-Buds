@@ -35,6 +35,9 @@ export const DarkTheme = createTheme({
     h5: {
       color: '#a2fd01' // Set the font color to white
     },
+    h6: {
+      color: '#f4f7f7', // Set the font color to white
+    },
     subtitle1: {
       color: '#f4f7f7'
     },
@@ -115,6 +118,14 @@ export const DarkTheme = createTheme({
       styleOverrides: {
         root: {
           color: '#81ca01'
+        }
+      }
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#1f4e5f',
+          borderRadius: 0
         }
       }
     }
