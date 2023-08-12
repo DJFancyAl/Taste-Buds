@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
+import OptionList from './OptionList';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import List from '@mui/material/List';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -24,21 +23,9 @@ const ItemLists = ( { group }) => {
     const [itemName, setItemName] = useState('')
     const [itemType, setItemType] = useState('')
     const [filteredTypes, setFilteredTypes] = useState([])
+    const [filteredList, setFilteredList] = useState([])
 
-    // Filtered List
-    const filteredItems = () => {
-        let filteredList = []
-        if (filteredTypes.length === 0) {
-            filteredList = items
-        } else {
-            filteredList = items.filter((item) => {
-                return filteredTypes.includes(item.type)
-            })
-        }
-        return filteredList
-    }
     
-
     // Toggle Filters
     const toggleFilters = (e) => {
         const type = e.target.value
@@ -49,6 +36,19 @@ const ItemLists = ( { group }) => {
         }
     }
 
+    
+    // Filtered List
+    useEffect(() => {
+        if(filteredTypes.length === 0) {
+            setFilteredList(items)
+        } else {
+            const filtered = items.filter((item) => {
+                return filteredTypes.includes(item.type)
+            })
+            setFilteredList(filtered)
+        }
+    })
+    
 
     // Handle Submit
     const handleSubmit = async (e) => {
@@ -66,21 +66,6 @@ const ItemLists = ( { group }) => {
             console.log(err)
           }
     }
-    
-    
-    // Item List
-    const itemList = (
-        <Box sx={{bgcolor: theme.palette.primary.main, mb: 4}}>
-            <List disablePadding>
-                {filteredItems().map((item, index) => {
-                    return (
-                        <FoodItem key={index} item={item} />
-                    )
-                })}
-            </List>
-        </Box>
-    )
-
 
     useEffect(() => {
         setItems(group.items)
@@ -124,7 +109,7 @@ const ItemLists = ( { group }) => {
                     <Button type='submit' variant="contained">Add Item</Button>
                 </Box>
             </Box>
-            {itemList}
+            <OptionList items={filteredList} />
         </>
     )
 }
