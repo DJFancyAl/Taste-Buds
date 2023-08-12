@@ -27,7 +27,7 @@ function App() {
 function AppContent({theme}) {
   return (
     <ThemeProvider theme={theme}>
-      <Paper sx={{width: '100vw', maxWidth:'100vw', minHeight: '100vh', borderRadius:'0', bgcolor: theme.palette.background.main}}>
+      <Paper sx={{maxWidth:'100vw', minHeight: '100vh', borderRadius:'0', bgcolor: theme.palette.background.main}}>
         <Router>
           <Routes>
             <Route path="/" element={<Start />} />

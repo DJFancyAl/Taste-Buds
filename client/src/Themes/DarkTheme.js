@@ -46,6 +46,9 @@ export const DarkTheme = createTheme({
     },
     body2: {
       color: '#f4f7f7'
+    },
+    caption: {
+      color: '#81ca01'
     }
   },
   components: {

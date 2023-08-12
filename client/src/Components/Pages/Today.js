@@ -3,6 +3,7 @@ import { UserContext } from '../../Context/UserContext';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import ItemLists from '../ItemLists';
+import Selections from '../Selections';
 import axios from 'axios';
 
 const Today = () => {
@@ -30,7 +31,7 @@ const Today = () => {
           <ItemLists group={today.group} />
         </Grid>
         <Grid item xs>
-          xs=4
+          <Selections />
         </Grid>
       </Grid>
     </Box>
