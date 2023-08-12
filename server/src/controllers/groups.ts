@@ -112,8 +112,8 @@ router.delete('/:groupId/:userId', async (req: express.Request, res: express.Res
 // Add Item
 router.post('/:id/items', async (req: express.Request, res: express.Response) => {
     try {
-        const foundGroup = await Group.findByIdAndUpdate(req.params.id,{$push: {'items': req.body}})
-        res.status(200).json("Item Created!")
+        const foundGroup = await Group.findByIdAndUpdate(req.params.id,{$addToSet: {'items': req.body}})
+        res.status(200).json(req.body)
     } catch (err) {
         res.status(400).json({error: err})
     }

@@ -114,6 +114,14 @@ export const DarkTheme = createTheme({
         }
       }
     },
+    MuiListItemText: {
+      styleOverrides: {
+        root: {
+          color: '#f4f7f7'
+        }
+      }
+
+    },
     MuiListItemIcon: {
       styleOverrides: {
         root: {
@@ -126,6 +134,16 @@ export const DarkTheme = createTheme({
         root: {
           backgroundColor: '#1f4e5f',
           borderRadius: 0
+        }
+      }
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#1f4e5f',
+          "&:focused": {
+            backgroundColor: '#1f4e5f',
+          }
         }
       }
     }

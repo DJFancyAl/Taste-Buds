@@ -17,10 +17,19 @@ router.get('/:id', async (req: express.Request, res: express.Response) => {
 router.get('/:id/today', async (req: express.Request, res: express.Response) => {
     try {
         const today = new Date()
-        const day = await Day.findOne({group: req.params.id, date: today.toLocaleDateString()})
+        const day = await Day.findOne({
+            group: req.params.id,
+            date: today.toLocaleDateString()
+          }).populate({
+            path: 'group',
+            select: 'items',
+            populate: {
+              path: 'members items',
+              select: 'name username'
+            }
+          })
 
         if(!day){
-            console.log("Creating")
             const createdDay = await Day.create({group: req.params.id})
             res.status(200).json(createdDay)
         } else {

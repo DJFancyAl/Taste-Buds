@@ -9,10 +9,10 @@ const groupSchema = new Schema({
     date: { type : Date, default: Date.now },
     items: [{type: Object, properties: {
         name: {type: String},
-        description: {type: String}
+        type: {type: String}
     }}],
     requests: [{type: Schema.Types.ObjectId, ref: 'User'}],
-    days: [{type: Schema.Types.ObjectId, ref: 'Day'}]
+    // days: [{type: Schema.Types.ObjectId, ref: 'Day'}]
 });
 
 // Export

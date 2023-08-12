@@ -6,7 +6,7 @@ const today = new Date()
 // Group Schema
 const daySchema = new Schema({
     group: {type: Schema.Types.ObjectId, ref: 'Group'},
-    date:  { type : Date, default: Date.now },
+    date:  { type : String, default: today.toLocaleDateString() },
     // member_items: []
 });
 
