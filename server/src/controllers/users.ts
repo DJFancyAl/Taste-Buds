@@ -23,7 +23,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
         const foundUsers = await User.find()
         res.status(200).json(foundUsers)
     } catch (err) {
-        res.status(400).json({error: err})
+        res.status(400).json({error: "Sorry - can't find users."})
     }
 })
 
@@ -46,13 +46,19 @@ router.post('/', async (req: express.Request, res: express.Response) => {
         return res.status(400).json({error: "Password less than 6 characters" })
     }
     
+    // Check User Exists
+    const searchUser = await User.findOne({username: username})
+    if (searchUser) {
+        return res.status(400).json({error: "That username is already in use." })
+    }
+    
     // Create User
     try {
         const createdUser = await User.create({username, password})
         const {password: string, ...rest} = createdUser._doc
         res.status(200).json(rest)
     } catch (err) {
-        res.status(400).json({error: err})
+        res.status(400).json({error: "Sorry - registration not completed."})
     }
 })
 
@@ -84,7 +90,7 @@ router.post('/login', async (req: express.Request, res: express.Response) => {
             res.status(200).json(rest)
         }
     } catch (err) {
-        res.status(400).json({error: err})
+        res.status(400).json({error: "Sorry - login not completed."})
     }
 })
 
@@ -97,7 +103,7 @@ router.get('/search/:name', async (req: express.Request, res: express.Response) 
               { username: req.params.name },
               { name: req.params.name }
             ],
-            // group: { $exists: true }
+            
           }).select('username name group')
 
         if(foundUsers.length === 0) {
@@ -106,7 +112,7 @@ router.get('/search/:name', async (req: express.Request, res: express.Response) 
             res.status(200).json(foundUsers)
         }
     } catch(err) {
-        res.status(400).json({error: err})
+        res.status(400).json({error: "Sorry - unable to find user."})
     }
 })
 
@@ -122,7 +128,7 @@ router.post('/:id/upload', upload.single('profileImage'), async (req: express.Re
                 res.status(400).json({ error: 'File upload failed' });
             }
     } catch (e) {
-        res.status(400).json({ error: e });
+        res.status(400).json({error: e });
     }
 })
 
@@ -145,7 +151,7 @@ router.put('/:id', async (req: express.Request, res: express.Response) => {
         const {password, ...rest} = updatedUser._doc
         res.status(200).json(rest);
     } catch (err) {
-        res.status(400).json({error: err})
+        res.status(400).json({error: "Sorry - changes not saved."})
     }
 })
 
@@ -155,7 +161,7 @@ router.delete('/:id', async (req: express.Request, res: express.Response) => {
         const deletedUser = await User.findByIdAndDelete(req.params.id)
         res.status(200).json("User deleted!")
     } catch (err) {
-        res.status(400).json({error: err})
+        res.status(400).json({error: "Sorry - user not deleted."})
     }
 })
 

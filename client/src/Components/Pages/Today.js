@@ -81,7 +81,7 @@ const Today = () => {
   }
 
   return (
-    <Box sx={{m: 4}}>
+    <Box sx={{p: 4}}>
       <DragDropContext onDragEnd={onDragEnd}>
         <Grid container spacing={4}>
           <Grid item xs={12} lg={6}>

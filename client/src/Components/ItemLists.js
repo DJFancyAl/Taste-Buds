@@ -12,20 +12,22 @@ import Select from '@mui/material/Select';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
-import FoodItem from './FoodItem';
 import axios from 'axios';
 
 
 const ItemLists = ( { group }) => {
     // State
     const theme = useTheme()
-    const [items, setItems] = useState([])
+    const [items, setItems] = useState(group.items)
     const [itemName, setItemName] = useState('')
     const [itemType, setItemType] = useState('')
     const [filteredTypes, setFilteredTypes] = useState([])
     const [filteredList, setFilteredList] = useState([])
 
-    
+    useEffect(() => {
+        console.log('Updated')
+    })
+
     // Toggle Filters
     const toggleFilters = (e) => {
         const type = e.target.value
@@ -47,7 +49,7 @@ const ItemLists = ( { group }) => {
             })
             setFilteredList(filtered)
         }
-    })
+    }, [items, filteredTypes])
     
 
     // Handle Submit
@@ -59,7 +61,8 @@ const ItemLists = ( { group }) => {
             {'name': itemName, 'type': itemType},
             {headers: {'Content-Type': 'application/json'}})
             
-            setItems([...items, response.data])
+            console.log(response.data)
+            setItems([response.data, ...items])
             setItemName('')
             setItemType('')
         } catch(err) {
@@ -109,7 +112,7 @@ const ItemLists = ( { group }) => {
                     <Button type='submit' variant="contained">Add Item</Button>
                 </Box>
             </Box>
-            <OptionList items={filteredList} />
+            <OptionList items={filteredList} setItems={setItems} />
         </>
     )
 }

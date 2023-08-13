@@ -14,7 +14,7 @@ import axios from 'axios';
 const Register = () => {
     const navigate = useNavigate();
     const [snackOpen, setSnackOpen] = useState(false);
-    const [alert, setAlert] = useState('')
+    const [alert, setAlert] = useState({severity: 'success', message:''})
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -28,18 +28,28 @@ const Register = () => {
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (formData.password === formData.confirmPassword) {
-            const response = await axios.post('http://localhost:5000/users',
-            formData,
-            {
-                headers: {
-                'Content-Type': 'application/json'
-                }
-            })
-            localStorage.setItem("user", JSON.stringify(response.data))
-            navigate('/user')
-        } else {
-            setAlert("Passwords don't match...")
+        try {
+            if (formData.password === formData.confirmPassword) {
+                const response = await axios.post('http://localhost:5000/users',
+                formData,
+                {
+                    headers: {
+                    'Content-Type': 'application/json'
+                    }
+                })
+                if(response.data) localStorage.setItem("user", JSON.stringify(response.data))
+                navigate('/user/group')
+            } else {
+                setAlert({severity: 'error', message: `Passwords don't match...`})
+                setSnackOpen(true)
+            }
+        } catch (err) {
+            if (err.response) {
+                setAlert({severity: 'error', message: err.response.data.error})
+            } else {
+                setAlert({severity: 'error', message: 'Login Failed...'})
+            }
+            console.log('3')
             setSnackOpen(true)
         }
     }
@@ -99,8 +109,7 @@ const Register = () => {
                 open={snackOpen}
                 autoHideDuration={4000}
                 onClose={handleClose}
-                // action={action}
-            ><Alert variant="filled" severity="error">{alert}</Alert></Snackbar>
+            ><Alert variant="filled" severity={alert.severity}>{alert.message}</Alert></Snackbar>
         </Container>
     )
 }

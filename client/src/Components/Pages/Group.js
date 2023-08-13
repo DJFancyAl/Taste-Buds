@@ -5,17 +5,21 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import GroupInfo from '../GroupInfo';
 import LinkGroup from '../LinkGroup';
+import CreateGroup from '../CreateGroup';
 
 const Group = () => {
   const { user, setUser } = useContext(UserContext)
 
   return (
     <Container sx={{pb: 5}}>
-      <Typography variant="h2" gutterBottom>Your Group</Typography>
-      <Divider sx={{ my: 4 }} />
+      <Typography variant="h2" gutterBottom sx={{mb: 5}}>Your Group</Typography>
       {user.group ? 
-        <GroupInfo group={user.group} user={user} setUser={setUser} /> :
-        <LinkGroup userId={user._id} />
+        <GroupInfo group={user.group} /> :
+        <>
+          <LinkGroup userId={user._id} />
+          <Divider sx={{my: 5}}>OR CREATE A NEW GROUP</Divider>
+          <CreateGroup />
+        </>
       }
     </Container>
   )

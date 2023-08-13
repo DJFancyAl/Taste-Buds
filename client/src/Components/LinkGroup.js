@@ -131,6 +131,7 @@ const LinkGroup = ( { userId } ) => {
     return (
         <Box sx={{textAlign: 'center'}}>
             <Typography variant="h5" gutterBottom>Okay. It's time for you to connect with your Bud(s)! You can start by searching for a bud to join their group OR create a new group and invite your bud to join!</Typography>
+            <Divider sx={{mt: 5}}>FIND YOUR BUD</Divider>
             <Box
                 component="form"
                 noValidate
