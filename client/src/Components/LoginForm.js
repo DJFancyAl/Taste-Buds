@@ -31,7 +31,7 @@ const LoginForm = () => {
                 }
             )
             localStorage.setItem("user", JSON.stringify(response.data))
-            navigate('/user')
+            navigate('/user/today')
         } catch(err) {
             if (err.response) {
                 setAlert({severity: 'error', message: err.response.data.error})

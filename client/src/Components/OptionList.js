@@ -7,7 +7,7 @@ import FoodItem from './FoodItem';
 
 const OptionList = ( { filteredList, deleteItem }) => {
     const theme = useTheme()
-    const [items, setItems] = useState([])
+    const [items, setItems] = useState(filteredList)
 
     useEffect(() => {
         setItems(filteredList)
