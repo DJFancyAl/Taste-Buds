@@ -8,7 +8,7 @@ import Selections from '../Selections';
 import axios from 'axios';
 
 const Today = () => {
-  const defaultChoices = [{type:'', name: 'Top Selection!'}, {type:'', name: 'Second Choice'}, {type:'', name: 'Third Option'}]
+  const defaultChoices = [{type:'Placeholder', name: 'Top Selection!'}, {type:'Placeholder', name: 'Second Choice'}, {type:'Placeholder', name: 'Third Option'}]
   const { user } = useContext(UserContext)
   const [today, setToday] = useState({group: {items: []}})
   const [choices, setChoices] = useState(defaultChoices)
@@ -43,18 +43,41 @@ const Today = () => {
       availableItems.splice(source.index, 1)
     }
     
-    if(source.droppableId === 'AvailableItems') {
-      availableItems.splice(destination.index, 0, add)
-    }
-    
     if(source.droppableId === 'SelectedItems') {
       add = selectedItems[source.index]
       selectedItems.splice(source.index, 1)
     }
-    
-    if(source.droppableId === 'SelectedItems') {
-      selectedItems.splice(destination.index, 0, add)
+
+    if(destination.droppableId === 'AvailableItems') {
+      availableItems.splice(destination.index, 0, add)
     }
+    
+    if(destination.droppableId === 'SelectedItems') {
+      selectedItems.splice(destination.index, 0, add)
+
+      if(selectedItems.length > 3) {
+        for(let i=0; i < selectedItems.length; i++) {
+          if(selectedItems[i].type === 'Placeholder') {
+            selectedItems.splice(i, 1)
+            break;
+          }
+        }
+      }
+
+      if(selectedItems.length > 3) {
+        availableItems.unshift(selectedItems[3])
+        selectedItems.pop()
+      }
+    }
+
+    if(source.droppableId === 'SelectedItems' && destination.droppableId === 'AvailableItems') {
+      const filtered = selectedItems.filter(x => x.type !== "Placeholder")
+      if(filtered.length === 0) selectedItems.splice(0, 0, defaultChoices[0])
+      if(filtered.length === 1) selectedItems.splice(1, 0, defaultChoices[1])
+      if(filtered.length === 2) selectedItems.splice(2, 0, defaultChoices[2])
+    }
+
+    setChoices(selectedItems)
   }
 
   return (

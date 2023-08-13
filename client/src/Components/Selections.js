@@ -4,9 +4,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
+import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import QuizIcon from '@mui/icons-material/Quiz';
 
 
 const Selections = ( { choices } ) => {
@@ -28,8 +32,14 @@ const Selections = ( { choices } ) => {
                                     <Draggable draggableId={'selection' + String(index)} index={index}>
                                         {(provided) => (
                                             <>
-                                                <ListItem key={index} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} sx={{bgcolor: theme.palette.secondary.light, p:3}}>
-                                                    <ListItemText primary={choice.name} primaryTypographyProps={{color: theme.palette.primary.main, textAlign:'center', fontWeight: 'bold'}} />
+                                                <ListItem key={index} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} sx={choice.type === 'Placeholder' ? {opacity: '0.4', backgroundColor: theme.palette.secondary.light, p:3} : {backgroundColor: theme.palette.secondary.light, p:3}}>
+                                                    <ListItemIcon sx={{color: theme.palette.primary.main}}>
+                                                        {choice.type === 'Placeholder' && <QuizIcon />}
+                                                        {choice.type === 'Takeout' && <FastfoodIcon />}
+                                                        {choice.type === 'Eat In' && <DinnerDiningIcon />}
+                                                        {choice.type === 'Dine Out' && <LocalDiningIcon />}
+                                                    </ListItemIcon>
+                                                    <ListItemText primary={choice.name} primaryTypographyProps={{color: theme.palette.primary.main, fontWeight: 'bold'}} />
                                                 </ListItem>
                                                 <Divider sx={{borderColor: theme.palette.primary.dark }}/>
                                             </>
@@ -37,6 +47,7 @@ const Selections = ( { choices } ) => {
                                     </Draggable>
                                 )
                             })}
+                            {provided.placeholder}
                         </List>
                     )}
                 </Droppable>
