@@ -29,10 +29,10 @@ const Selections = ( { choices } ) => {
                         <List disablePadding ref={provided.innerRef} {...provided.droppableProps}>
                             {choices.map((choice, index) => {
                                 return (
-                                    <Draggable draggableId={'selection' + String(index)} index={index}>
+                                    <Draggable draggableId={'selection' + String(index)} key={index} index={index}>
                                         {(provided) => (
                                             <>
-                                                <ListItem key={index} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} sx={choice.type === 'Placeholder' ? {opacity: '0.4', backgroundColor: theme.palette.secondary.light, p:3} : {backgroundColor: theme.palette.secondary.light, p:3}}>
+                                                <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} sx={choice.type === 'Placeholder' ? {opacity: '0.4', backgroundColor: theme.palette.secondary.light, p:3} : {backgroundColor: theme.palette.secondary.light, p:3}}>
                                                     <ListItemIcon sx={{color: theme.palette.primary.main}}>
                                                         {choice.type === 'Placeholder' && <QuizIcon />}
                                                         {choice.type === 'Takeout' && <FastfoodIcon />}

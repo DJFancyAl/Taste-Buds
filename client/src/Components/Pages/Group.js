@@ -18,7 +18,7 @@ const Group = () => {
         <>
           <LinkGroup userId={user._id} />
           <Divider sx={{my: 5}}>OR CREATE A NEW GROUP</Divider>
-          <CreateGroup />
+          <CreateGroup userId={user._id} setUser={setUser} />
         </>
       }
     </Container>

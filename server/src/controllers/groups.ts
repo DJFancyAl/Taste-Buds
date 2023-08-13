@@ -31,8 +31,8 @@ router.post('/', async (req: express.Request, res: express.Response) => {
             type: type
         }
         const createdGroup = await Group.create(newGroup)
-        const updatedUser = await User.findByIdAndUpdate(member, {group: createdGroup._id})
-        res.status(200).json(createdGroup)
+        const updatedUser = await User.findByIdAndUpdate(member, {group: createdGroup._id}, { new: true })
+        res.status(200).json(updatedUser)
     } catch (err) {
         res.status(400).json({error: err})
     }

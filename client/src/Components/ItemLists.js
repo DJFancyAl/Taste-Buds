@@ -18,15 +18,34 @@ import axios from 'axios';
 const ItemLists = ( { group }) => {
     // State
     const theme = useTheme()
-    const [items, setItems] = useState(group.items)
-    const [itemName, setItemName] = useState('')
-    const [itemType, setItemType] = useState('')
+    const [items, setItems] = useState([])
     const [filteredTypes, setFilteredTypes] = useState([])
     const [filteredList, setFilteredList] = useState([])
+    const [itemName, setItemName] = useState('')
+    const [itemType, setItemType] = useState('')
+    
+    
+    // Delete List Item
+    const deleteItem = (id) => {
+        const newItems = items
+        newItems.splice(id, 1)
+        setItems(newItems)
+    }
 
-    useEffect(() => {
-        console.log('Updated')
-    })
+
+    // Filter Items
+    const filterItems = () => {
+        if(filteredTypes.length === 0) {
+            setFilteredList(items)
+        } else {
+            const filtered = items.filter((item) => {
+                return filteredTypes.includes(item.type)
+            })
+            setFilteredList(filtered)
+        }
+    }
+
+
 
     // Toggle Filters
     const toggleFilters = (e) => {
@@ -37,21 +56,8 @@ const ItemLists = ( { group }) => {
             setFilteredTypes([...filteredTypes, type])
         }
     }
-
     
-    // Filtered List
-    useEffect(() => {
-        if(filteredTypes.length === 0) {
-            setFilteredList(items)
-        } else {
-            const filtered = items.filter((item) => {
-                return filteredTypes.includes(item.type)
-            })
-            setFilteredList(filtered)
-        }
-    }, [items, filteredTypes])
     
-
     // Handle Submit
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -61,27 +67,35 @@ const ItemLists = ( { group }) => {
             {'name': itemName, 'type': itemType},
             {headers: {'Content-Type': 'application/json'}})
             
-            console.log(response.data)
             setItems([response.data, ...items])
             setItemName('')
             setItemType('')
         } catch(err) {
             console.log(err)
-          }
+        }
     }
-
+    
+    
+    // Set Items
     useEffect(() => {
         setItems(group.items)
-    }, [group.items])
+    }, [group])
+    
+
+    // Filter List
+    useEffect(() => {
+        filterItems()
+    }, [items, deleteItem])
+
 
     return (
         <>
             <Box sx={{height: '150px'}}>
                 <Box sx={{textAlign: 'center', mb:3}}>
                     <ButtonGroup variant="contained" aria-label="outlined primary button group" sx={{m: 'auto'}}>
-                        <Button onClick={toggleFilters} sx={filteredTypes.includes('Takeout') && {backgroundColor: theme.palette.primary.dark}} value='Takeout'>Take Out</Button>
-                        <Button onClick={toggleFilters} sx={filteredTypes.includes('Eat In') && {backgroundColor: theme.palette.primary.dark}} value='Eat In'>Eat In</Button>
-                        <Button onClick={toggleFilters} sx={filteredTypes.includes('Dine Out') && {backgroundColor: theme.palette.primary.dark}} value= 'Dine Out'>Dine Out</Button>
+                        <Button onClick={toggleFilters} sx={filteredTypes.includes('Takeout') ? {backgroundColor: theme.palette.primary.dark} : {}} value='Takeout'>Take Out</Button>
+                        <Button onClick={toggleFilters} sx={filteredTypes.includes('Eat In') ? {backgroundColor: theme.palette.primary.dark} : {}} value='Eat In'>Eat In</Button>
+                        <Button onClick={toggleFilters} sx={filteredTypes.includes('Dine Out') ? {backgroundColor: theme.palette.primary.dark} : {}} value= 'Dine Out'>Dine Out</Button>
                     </ButtonGroup>
                 </Box>
                 <Box
@@ -112,7 +126,9 @@ const ItemLists = ( { group }) => {
                     <Button type='submit' variant="contained">Add Item</Button>
                 </Box>
             </Box>
-            <OptionList items={filteredList} setItems={setItems} />
+
+
+            <OptionList filteredList={filteredList} deleteItem={deleteItem} />       
         </>
     )
 }
