@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Box from '@mui/material/Box';
@@ -8,16 +9,19 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
+import Backdrop from '@mui/material/Backdrop';
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import QuizIcon from '@mui/icons-material/Quiz';
 import axios from 'axios';
-import { responsiveProperty } from '@mui/material/styles/cssUtils';
 
 
 const Selections = ( { choices, today, setToday, userId } ) => {
     const theme = useTheme()
+    const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -26,22 +30,20 @@ const Selections = ( { choices, today, setToday, userId } ) => {
             const submitted = today.selections.some((selection) => selection.member === userId)
 
             if(!submitted) {
+                setLoading(true)
                 const response = await axios.post(`http://localhost:5000/days/${today._id}`,
-                  {"member": userId, "selection": choices },
-                  {
-                      headers: {
-                      'Content-Type': 'application/json'
-                      }
-                  }
+                {"member": userId, "selection": choices },
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }
                 )
                 setToday(response.data)
+                setLoading(false)
             } else {
                 console.log('Already submitted')
             }
-
-            
-            // localStorage.setItem("user", JSON.stringify(response.data))
-            // setUser(response.data)
           } catch (err) {
             console.log(err)
           }
@@ -84,6 +86,15 @@ const Selections = ( { choices, today, setToday, userId } ) => {
                 </Droppable>
                 <Button variant='contained' sx={{mt:3}} onClick={handleSubmit}>Submit Choices</Button>
             </Box>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1}}
+                open={loading}
+            >
+                <Box sx={{textAlign: 'center'}} >
+                    <CircularProgress sx={{color: theme.palette.secondary.main, mb: 3}} />
+                    <Typography variant='h6'>Fetching results...</Typography>
+                </Box>
+            </Backdrop>
         </Box>
     )
 }

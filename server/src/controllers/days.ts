@@ -1,8 +1,12 @@
 // Dependencies
+import { Types } from 'mongoose'
 import express from 'express';
-import { Group, Day } from '../models';
-import { createSummary } from '../summary'
+import { Group, Day, User } from '../models';
+import { createSummary } from '../summary';
+import { create } from 'domain';
 const router = require('express').Router()
+const ObjectId = Types.ObjectId
+
 
 // GET All Days (By Group)
 router.get('/:id', async (req: express.Request, res: express.Response) => {
@@ -28,9 +32,17 @@ router.get('/:id/today', async (req: express.Request, res: express.Response) => 
               path: 'members items',
               select: 'name username'
             }
-          })
+          }).populate({
+                path: 'selections',
+                populate: {
+                  path: 'member',
+                  model: 'User',
+                  select: 'name username'
+                }
+            })
 
-        if(!day){
+          
+          if(!day){
             const createdDay = await Day.create({group: req.params.id})
             res.status(200).json(createdDay)
         } else {
@@ -44,10 +56,11 @@ router.get('/:id/today', async (req: express.Request, res: express.Response) => 
 
 // Add Selections (By Day ID)
 router.post('/:id', async (req: express.Request, res: express.Response) => {
+    const { member, selection } = req.body
     try {
         const today = await Day.findByIdAndUpdate(
                 req.params.id,
-                {$addToSet: {'selections': req.body}},
+                {$addToSet: {'selections': {member: new ObjectId(member), selection: selection}}},
                 {new: true}
             ).populate({
                 path: 'group',
@@ -56,13 +69,22 @@ router.post('/:id', async (req: express.Request, res: express.Response) => {
                   path: 'members items',
                   select: 'name username'
                 }
+              }).populate({
+                path: 'selections',
+                populate: {
+                  path: 'member',
+                  model: 'User',
+                  select: 'name username'
+                }
               })
 
+        
         if(today.group.members.length === today.selections.length){
-            createSummary(today.selections)
-            today.summary = "The results are in! You both want Sushi."
+            const results = await createSummary(today.selections)
+            today.summary = results
             await today.save()
         }
+
         res.status(200).json(today)
     } catch (err) {
         res.status(400).json({error: 'Sorry - unable sot submit choices.'})

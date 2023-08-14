@@ -6,16 +6,19 @@ const today = new Date()
 // Group Schema
 const daySchema = new Schema({
     group: {type: Schema.Types.ObjectId, ref: 'Group'},
-    date:  { type : String, default: today.toLocaleDateString() },
+    date:  { type : String, default: new Date().toLocaleDateString() },
     selections: [{type: Object, properties: {
         member: {type: Schema.Types.ObjectId, ref: 'User'},
-        selection: {type: Object, properties: {
+        selection: [{type: Object, properties: {
             name: String,
             type: String
-        }},
-        default: []
+        }}]
     }}],
-    summary: String
+    summary: {type: Object, properties: {
+        top_choice: String,
+        second_choice: String,
+        explanation: String
+    }}
 });
 
 // Export

@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from 'react'
-import { useTheme } from '@mui/material';
+import { Divider, useTheme } from '@mui/material';
 import { UserContext } from '../Context/UserContext';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ListSubheader from '@mui/material/ListSubheader';
@@ -14,13 +15,13 @@ import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import axios from 'axios';
 
 const Results = ( { today, setToday }) => {
     const { user } = useContext(UserContext)
     const theme = useTheme()
-    const userSelection = today.selections.find(selection => selection.member === user._id)
-
+    const userSelection = today.selections.find(selection => selection.member._id === user._id)
 
     // Percent of Progress (for progress bar)
     const progress = (today.selections.length/today.group.members.length) * 100
@@ -38,12 +39,47 @@ const Results = ( { today, setToday }) => {
 
 
     // Today's Results
-    const summary = (
-        <>
-            <Typography variant="h4" gutterBottom>{today.summary}</Typography>
-            <Typography variant="h4" gutterBottom>{today.summary}</Typography>
-        </>
-    )
+    const summary = () => {
+        return (
+            <>
+                <Box sx={{maxWidth:'1000px', textAlign: 'center', m: 'auto', p: 3, backgroundColor: theme.palette.primary.main}}>
+                    <Typography variant="subtitle1" gutterBottom>The results are in...</Typography>
+                    <Typography variant="h5" sx={{fontWeight: 'bold'}} gutterBottom><EmojiEventsIcon /> Top Choice: {today.summary.top_choice} <EmojiEventsIcon /></Typography>
+                    <Typography variant="h6">Alternative Choice: {today.summary.second_choice}</Typography>
+                    <Divider sx={{my: 3}} />
+                    <Typography variant="body2" gutterBottom>{today.summary.explanation}</Typography>
+                </Box>
+                <Divider sx={{my: 4}}>CHOICES</Divider>
+                <Grid container spacing={4}>
+                    {today.selections.map((selection, index) => {
+                        return (
+                        <Grid key={index} item xs={12} md={6}>
+                            <List
+                                sx={{bgcolor: theme.palette.primary.main}}
+                                subheader={
+                                    <ListSubheader component="div" id="nested-list-subheader">{selection.member.name}'s Choices:</ListSubheader>
+                                }>
+                                {selection.selection.map((item, j) => {
+                                    return (
+                                        <ListItem key={j}>
+                                                <ListItemIcon>
+                                                    {item.type === 'Takeout' && <FastfoodIcon />}
+                                                    {item.type === 'Eat In' && <DinnerDiningIcon />}
+                                                    {item.type === 'Dine Out' && <LocalDiningIcon />}
+                                                </ListItemIcon>
+                                            <ListItemText primary={item.name} />
+                                        </ListItem>
+                                    )
+                                })}
+                            </List>
+                        </Grid>
+                        )
+                    })}
+                </Grid>
+                <Divider sx={{my: 4}} />
+                <Typography variant="h6" gutterBottom sx={{textAlign: 'center'}}>Come back tomorrow to choose another meal!</Typography>
+            </>
+    )}
 
 
     // If waiting for group's results
@@ -81,7 +117,7 @@ const Results = ( { today, setToday }) => {
 
   return (
     <>
-        {today.summary ? summary : waiting}
+        {today.summary ? summary() : waiting}
     </>
   )
 }

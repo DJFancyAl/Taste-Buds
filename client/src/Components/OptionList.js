@@ -10,7 +10,7 @@ const OptionList = ( { filteredList, deleteItem }) => {
     const [items, setItems] = useState([])
 
     useEffect(() => {
-        setItems(filteredList)
+        if(filteredList) setItems(filteredList)
     }, [filteredList])
 
     return (

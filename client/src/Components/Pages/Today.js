@@ -14,7 +14,6 @@ const Today = () => {
   const [today, setToday] = useState({group: {items: []}, selections: []})
   const [choices, setChoices] = useState(defaultChoices)
 
-
   const getToday = async () => {
     try {
       const response  = await axios.get(`http://localhost:5000/days/${user.group}/today`)
@@ -84,7 +83,7 @@ const Today = () => {
 
 
   // If already submitted choices - display Result page.
-  const submitted = today.selections.some((selection) => selection.member === user._id)
+  const submitted = today.selections.some((selection) => selection.member._id === user._id)
   if(submitted) return <Box sx={{p: 4}}><Results today={today} setToday={setToday} /></Box>
 
   return (
