@@ -1,6 +1,7 @@
 // Dependencies
 import express from 'express';
 import { Group, Day } from '../models';
+import { createSummary } from '../summary'
 const router = require('express').Router()
 
 // GET All Days (By Group)
@@ -36,9 +37,58 @@ router.get('/:id/today', async (req: express.Request, res: express.Response) => 
             res.status(200).json(day)
         }
     } catch (err) {
-        res.status(400).json({error: err})
+        res.status(400).json({error: "Sorry - unable to fetch today's info."})
     }
 })
+
+
+// Add Selections (By Day ID)
+router.post('/:id', async (req: express.Request, res: express.Response) => {
+    try {
+        const today = await Day.findByIdAndUpdate(
+                req.params.id,
+                {$addToSet: {'selections': req.body}},
+                {new: true}
+            ).populate({
+                path: 'group',
+                select: 'items',
+                populate: {
+                  path: 'members items',
+                  select: 'name username'
+                }
+              })
+
+        if(today.group.members.length === today.selections.length){
+            createSummary(today.selections)
+            today.summary = "The results are in! You both want Sushi."
+            await today.save()
+        }
+        res.status(200).json(today)
+    } catch (err) {
+        res.status(400).json({error: 'Sorry - unable sot submit choices.'})
+    }
+})
+
+
+// Edit Day
+router.put('/:dayId/:userId', async (req: express.Request, res: express.Response) => {
+    try {
+        const today = await Day.findById(req.params.dayId).populate({
+                    path: 'group',
+                    select: 'items',
+                    populate: {
+                      path: 'members items',
+                      select: 'name username'
+                    }
+                  })
+        today.selections = today.selections.filter((selection: { member: string; }) => selection.member !== req.params.userId)
+        const updatedToday = await today.save()
+        res.status(200).json(updatedToday)
+    } catch (err) {
+        res.status(400).json({error: 'Sorry - unable to make edits.'})
+    }
+})
+
 
 // Wildcard
 router.get('*', (req: express.Request, res: express.Response) => {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react'
 import { DragDropContext } from "react-beautiful-dnd";
 import { UserContext } from '../../Context/UserContext';
+import Results from '../Results';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import ItemLists from '../ItemLists';
@@ -10,8 +11,9 @@ import axios from 'axios';
 const Today = () => {
   const defaultChoices = [{type:'Placeholder', name: 'Top Selection!'}, {type:'Placeholder', name: 'Second Choice'}, {type:'Placeholder', name: 'Third Option'}]
   const { user } = useContext(UserContext)
-  const [today, setToday] = useState({group: {items: []}})
+  const [today, setToday] = useState({group: {items: []}, selections: []})
   const [choices, setChoices] = useState(defaultChoices)
+
 
   const getToday = async () => {
     try {
@@ -80,6 +82,11 @@ const Today = () => {
     setChoices(selectedItems)
   }
 
+
+  // If already submitted choices - display Result page.
+  const submitted = today.selections.some((selection) => selection.member === user._id)
+  if(submitted) return <Box sx={{p: 4}}><Results today={today} setToday={setToday} /></Box>
+
   return (
     <Box sx={{p: 4}}>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -88,7 +95,7 @@ const Today = () => {
             <ItemLists group={today.group} />
           </Grid>
           <Grid item xs>
-            <Selections choices={choices} />
+            <Selections choices={choices} today={today} setToday={setToday} userId={user._id} />
           </Grid>
         </Grid>
       </DragDropContext>

@@ -7,7 +7,7 @@ import FoodItem from './FoodItem';
 
 const OptionList = ( { filteredList, deleteItem }) => {
     const theme = useTheme()
-    const [items, setItems] = useState(filteredList)
+    const [items, setItems] = useState([])
 
     useEffect(() => {
         setItems(filteredList)
@@ -18,7 +18,7 @@ const OptionList = ( { filteredList, deleteItem }) => {
             <Droppable droppableId='AvailableItems'>
                 {(provided) => (
                     <List disablePadding ref={provided.innerRef} {...provided.droppableProps}> 
-                        {filteredList.map((item, index) => {
+                        {items.map((item, index) => {
                             return <FoodItem key={index} id={index} item={item} deleteItem={deleteItem} />
                         })}
                         {provided.placeholder}

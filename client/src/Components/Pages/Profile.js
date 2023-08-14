@@ -9,8 +9,6 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Avatar from '@mui/material/Avatar';
 
-import Test from '../Test';
-
 const Profile = () => {
     const {user, setUser} = useContext(UserContext)
     const {_id, username, date, name, pic} = user
@@ -34,8 +32,6 @@ const Profile = () => {
             <Divider sx={{my:4}} />
             <UpdateProfile user={user} setUser={setUser} />
             <Divider sx={{my:4}} />
-            
-            {/* <Test /> */}
         </Container>
     )
 }

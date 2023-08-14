@@ -1,6 +1,7 @@
 import { useTheme } from '@mui/material/styles';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -11,10 +12,40 @@ import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import QuizIcon from '@mui/icons-material/Quiz';
+import axios from 'axios';
+import { responsiveProperty } from '@mui/material/styles/cssUtils';
 
 
-const Selections = ( { choices } ) => {
+const Selections = ( { choices, today, setToday, userId } ) => {
     const theme = useTheme()
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+
+        try {
+            const submitted = today.selections.some((selection) => selection.member === userId)
+
+            if(!submitted) {
+                const response = await axios.post(`http://localhost:5000/days/${today._id}`,
+                  {"member": userId, "selection": choices },
+                  {
+                      headers: {
+                      'Content-Type': 'application/json'
+                      }
+                  }
+                )
+                setToday(response.data)
+            } else {
+                console.log('Already submitted')
+            }
+
+            
+            // localStorage.setItem("user", JSON.stringify(response.data))
+            // setUser(response.data)
+          } catch (err) {
+            console.log(err)
+          }
+    }
 
     return (
         <Box sx={{height: '100%', display: 'flex', flexDirection: 'column'}}>
@@ -51,6 +82,7 @@ const Selections = ( { choices } ) => {
                         </List>
                     )}
                 </Droppable>
+                <Button variant='contained' sx={{mt:3}} onClick={handleSubmit}>Submit Choices</Button>
             </Box>
         </Box>
     )

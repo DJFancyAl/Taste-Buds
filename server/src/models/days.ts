@@ -7,7 +7,15 @@ const today = new Date()
 const daySchema = new Schema({
     group: {type: Schema.Types.ObjectId, ref: 'Group'},
     date:  { type : String, default: today.toLocaleDateString() },
-    // member_items: []
+    selections: [{type: Object, properties: {
+        member: {type: Schema.Types.ObjectId, ref: 'User'},
+        selection: {type: Object, properties: {
+            name: String,
+            type: String
+        }},
+        default: []
+    }}],
+    summary: String
 });
 
 // Export
