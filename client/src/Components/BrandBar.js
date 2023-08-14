@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { ThemeContext } from '../Context/ThemeContext';
 import { UserContext } from '../Context/UserContext';
@@ -100,7 +101,9 @@ const BrandBar = () => {
                   <MenuIcon />
               </IconButton>
               <Box sx={{ flexGrow: 1}}>
-                <img src="/logo.png" alt="Taste Buds Logo" height={40} />
+                <Link to='/user'>
+                  <img src="/logo.png" alt="Taste Buds Logo" height={40} />
+                </Link>
               </Box>
               <IconButton onClick={logout}>
                 <Avatar variant='rounded' alt={user.username} src="/static/images/avatar/1.jpg" />

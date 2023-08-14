@@ -11,7 +11,7 @@ import Avatar from '@mui/material/Avatar';
 
 const Profile = () => {
     const {user, setUser} = useContext(UserContext)
-    const {_id, username, date, name, pic} = user
+    const {username, date, name} = user
     const inputDate = new Date(date);
     
     return (

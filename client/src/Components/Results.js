@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import { Divider, useTheme } from '@mui/material';
 import { UserContext } from '../Context/UserContext';
 import Box from '@mui/material/Box';
@@ -43,7 +43,7 @@ const Results = ( { today, setToday }) => {
         return (
             <>
                 <Box sx={{maxWidth:'1000px', textAlign: 'center', m: 'auto', p: 3, backgroundColor: theme.palette.primary.main}}>
-                    <Typography variant="subtitle1" gutterBottom>The results are in...</Typography>
+                    <Typography variant="subtitle1" gutterBottom>Today's results are in...</Typography>
                     <Typography variant="h5" sx={{fontWeight: 'bold'}} gutterBottom><EmojiEventsIcon /> Top Choice: {today.summary.top_choice} <EmojiEventsIcon /></Typography>
                     <Typography variant="h6">Alternative Choice: {today.summary.second_choice}</Typography>
                     <Divider sx={{my: 3}} />

@@ -1,5 +1,4 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -7,8 +6,18 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import LoginForm from '../LoginForm';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import { useEffect } from 'react';
 
 const Start = () => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(localStorage.getItem('user')){
+      navigate('/user')
+    }
+  }, [])
+
+
   return (
     <Container sx={{minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: 5}}>
         <Box>
