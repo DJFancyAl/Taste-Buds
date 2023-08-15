@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { DragDropContext } from "react-beautiful-dnd";
 import { UserContext } from '../../Context/UserContext';
 import Results from '../Results';
@@ -9,10 +10,12 @@ import Selections from '../Selections';
 import axios from 'axios';
 
 const Today = () => {
+  const navigate = useNavigate()
   const defaultChoices = [{type:'Placeholder', name: 'Top Selection!'}, {type:'Placeholder', name: 'Second Choice'}, {type:'Placeholder', name: 'Third Option'}]
   const { user } = useContext(UserContext)
   const [today, setToday] = useState({group: {items: []}, selections: []})
   const [choices, setChoices] = useState(defaultChoices)
+
 
   const getToday = async () => {
     try {
@@ -23,6 +26,7 @@ const Today = () => {
       console.log(err)
     }
   }
+
 
   useEffect(() => {
     getToday()
@@ -82,6 +86,10 @@ const Today = () => {
     setChoices(selectedItems)
   }
 
+  // If user is not in a group, then redirect to the group page.
+  useEffect(() => {
+    if(!user.group) navigate('/user/group')
+  }, [])
 
   // If already submitted choices - display Result page.
   const submitted = today.selections.some((selection) => selection.member._id === user._id)

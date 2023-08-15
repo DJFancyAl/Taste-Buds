@@ -27,7 +27,7 @@ useEffect(() => {
       try {
         const response = await axios.get(`http://localhost:5000/users/user`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
         setUser(response.data)
-        navigate('/user/today')
+        // navigate('/user/today')
       } catch(err) {
           if (err.response) {
               setAlert({severity: 'error', message: err.response.data.error})

@@ -87,9 +87,10 @@ router.post('/login', async (req: express.Request, res: express.Response) => {
 
         // Check if user exists
         if (!foundUser) {
-            res.status(401).json({error: "Login not succesful - User not found."})
+            return res.status(401).json({error: "Login not succesful - User not found."})
         }
 
+        // Verify Password
         const validPassword = await bcrypt.compare(password, foundUser.password)
         if (!validPassword){
             res.status(401).json({error: "Login not successful - Invalid Password."})

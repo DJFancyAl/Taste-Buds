@@ -5,7 +5,7 @@ export const LightTheme = createTheme({
     type: 'light', // This specifies the theme type as dark
     primary: {
       main: '#367287', // Define your darker primary color
-      light: '#5d8395', // Define your darker primary color
+      light: '#7EB1C9', // Define your darker primary color
     },
     secondary: {
       main: '#a2fd01', // Define your darker secondary color
@@ -13,7 +13,7 @@ export const LightTheme = createTheme({
       dark: '#b3ec4e', // Define your darker secondary color
     },
     background: {
-      main: '#5d8395',
+      main: '#7EB1C9',
       light: '#f4f7f7'
     }
   },
@@ -21,7 +21,7 @@ export const LightTheme = createTheme({
     fontFamily: 'Roboto, sans-serif', // Set your preferred font family
     fontSize: 16, // Set your base font size
     h1: {
-      color: '#a2fd01', // Set the font color to white
+      color: '#367287', // Set the font color to white
     },
     h2: {
       color: '#f4f7f7', // Set the font color to white
@@ -69,9 +69,9 @@ export const LightTheme = createTheme({
       styleOverrides: {
         root: {
           color: '#f4f7f7',
-          borderColor: 'rgba(180, 254, 51, 0.15)',
+          borderColor: 'rgba(54, 114, 135, 0.6)',
           '&::before, ::after': {
-            borderColor: 'rgba(180, 254, 51, 0.15)',
+            borderColor: 'rgba(54, 114, 135, 0.6)',
           }
         },
       }
@@ -104,7 +104,7 @@ export const LightTheme = createTheme({
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#5d8395',
+          backgroundColor: '#7EB1C9',
           color: '#f4f7f7'
         }
       }

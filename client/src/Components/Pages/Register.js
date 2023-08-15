@@ -43,7 +43,6 @@ const Register = () => {
             } else {
                 setAlert({severity: 'error', message: 'Login Failed...'})
             }
-            console.log('3')
             setSnackOpen(true)
         }
     }

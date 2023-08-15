@@ -15,7 +15,7 @@ const Profile = () => {
     const inputDate = new Date(date);
     
     return (
-        <Container>
+        <Container sx={{pb: 4}}>
             <Stack direction='row' spacing={2} sx={{alignItems: 'center', pb: 2}} divider={<Divider orientation="vertical" flexItem />}>
                 <Avatar
                     alt={user.username}
@@ -30,7 +30,6 @@ const Profile = () => {
             </Stack>
             <Divider sx={{my:4}} />
             <UpdateProfile user={user} setUser={setUser} />
-            <Divider sx={{my:4}} />
         </Container>
     )
 }
