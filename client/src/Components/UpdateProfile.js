@@ -1,58 +1,49 @@
 import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../Context/UserContext';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import axios from 'axios';
 
-const UpdateProfile = () => {
-    const {user, setUser} = useContext(UserContext)
-    const [snackOpen, setSnackOpen] = useState(false);
-    const [alert, setAlert] = useState({severity: '', message:''})
-    const [formData, setFormData] = useState({});
+
+const UpdateProfile = ( { updateProfile }) => {
+    const {user} = useContext(UserContext)
+    const [formData, setFormData] = useState({username: '', name: '', bio: ''});
     const [selectedFile, setSelectedFile] = useState(null)
 
-    const handleFileChange = (e) => { setSelectedFile(e.target.files[0]) };
 
-    const handleUpload = async () => {
-        const formData = new FormData();
-        formData.append('profileImage', selectedFile);
+    // const handleUpload = async () => {
+    //     const formData = new FormData();
+        // formData.append('profileImage', selectedFile);
 
-        const response = await axios.post(`http://localhost:5000/users/${user._id}/upload`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            }
-        })
+        // const response = await axios.post(`http://localhost:5000/users/${user._id}/upload`, formData, {
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data',
+        //     }
+        // })
 
-        setUser(response.data)
-    }
+        // setUser(response.data)
+    // }
 
     // Update User Profile
     const handleSubmit = async (e) => {
         e.preventDefault()
-        try {
-            const token = localStorage.getItem('token')
-            if(token) {
-                const response = await axios.put(`http://localhost:5000/users/${user._id}`, formData, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
-                setUser(response.data)
-                setAlert({severity: 'success', message: 'Profile Updated!'})
-                setSnackOpen(true)
-            }
-        } catch (e) {
-            setAlert({severity: 'error', message: 'Update failed...'})
-            setSnackOpen(true)
-        }
-    }
 
-    // Handle Snackbar Close
-    const handleClose = (e, reason) => {
-        if (reason === 'clickaway') return;    
-        setSnackOpen(false);
-    };
+        updateProfile(formData)
+
+        // try {
+        //     const token = localStorage.getItem('token')
+        //     if(token) {
+        //         const response = await axios.put(`http://localhost:5000/users/${user._id}`, formData, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+        //         setUser(response.data)
+        //         setAlert({severity: 'success', message: 'Profile Updated!'})
+        //         setSnackOpen(true)
+        //     }
+        // } catch (e) {
+        //     setAlert({severity: 'error', message: 'Update failed...'})
+        //     setSnackOpen(true)
+        // }
+    }
 
 
     // Sets form data to existing user
@@ -106,20 +97,15 @@ const UpdateProfile = () => {
                 rows={3}
                 onChange={(e) => setFormData({...formData, bio: e.target.value})}
                 />
-                <Stack direction="row" spacing={2} sx={{mx: 'auto'}}>
+                {/* <Stack direction="row" spacing={2} sx={{mx: 'auto'}}>
                     <TextField
                         type='file'
                         accept="image/*"
                         onChange={handleFileChange}
                     />
                     <Button variant="contained" onClick={handleUpload}>Upload Photo</Button>
-                </Stack>
+                </Stack> */}
             <Button type='submit' variant="contained">Update User</Button>
-            <Snackbar
-                open={snackOpen}
-                autoHideDuration={4000}
-                onClose={handleClose}
-            ><Alert variant="filled" severity={alert.severity}>{alert.message}</Alert></Snackbar>
         </Box>
     )
 }

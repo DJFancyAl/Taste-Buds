@@ -38,7 +38,7 @@ const GroupInfo = ( { group }) => {
   // Handle Accept Request
   const handleAccept = async (member) => {
     try {
-      const response = await axios.get(`http://localhost:5000/groups/${group}/${member}`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+      const response = await axios.get(`http://localhost:5000/groups/${group._id}/${member}`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setData(response.data)
       setAlert({severity: 'success', message: 'Join Request Accepted!'})
       setSnackOpen(true)
@@ -52,7 +52,7 @@ const GroupInfo = ( { group }) => {
   const handleReject = async (member) => {
     try {
       const removed = requests.filter((request) => request._id !== member)
-      const response = await axios.put(`http://localhost:5000/groups/${group}`, {"requests": removed}, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+      const response = await axios.put(`http://localhost:5000/groups/${group._id}`, {"requests": removed}, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setData({...data, requests: removed})
       setAlert({severity: 'success', message: 'Join Request Rejected.'})
       setSnackOpen(true)
@@ -66,7 +66,7 @@ const GroupInfo = ( { group }) => {
   // Handle Leave Group
   const handleLeave = async () => {
     try {
-      const response = await axios.delete(`http://localhost:5000/groups/${group}/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+      const response = await axios.delete(`http://localhost:5000/groups/${group._id}/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setUser(response.data)
     } catch (err) {
       setAlert({severity: 'error', message: 'Leave Group failed...'})
@@ -144,7 +144,7 @@ const GroupInfo = ( { group }) => {
   useEffect(() => {
     const getGroup = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/groups/${group}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+        const response = await axios.get(`http://localhost:5000/groups/${group._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
         setData(response.data)
       } catch (err) {
         console.log(err)

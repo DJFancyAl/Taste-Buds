@@ -32,7 +32,7 @@ router.post('/', validateToken, async (req: express.Request, res: express.Respon
             type: type
         }
         const createdGroup = await Group.create(newGroup)
-        const updatedUser = await User.findByIdAndUpdate(member, {group: createdGroup._id}, { new: true })
+        const updatedUser = await User.findByIdAndUpdate(member, {group: createdGroup}, { new: true }).populate('group')
         res.status(200).json(updatedUser)
     } catch (err) {
         res.status(400).json({error: err})

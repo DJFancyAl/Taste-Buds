@@ -30,8 +30,8 @@ const CreateGroup = ( { userId, setUser } ) => {
         const response = await axios.post(`http://localhost:5000/groups`,
           {"member": userId, "description": description, "type": type},
           { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}}
-        ) 
-        localStorage.setItem("user", JSON.stringify(response.data))
+        )
+        console.log(response.data)
         setUser(response.data)
       }
     } catch (err) {

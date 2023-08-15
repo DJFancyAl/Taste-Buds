@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const User = () => {
   const navigate = useNavigate()
-  const [user, setUser] = useState()
+  const [user, setUser] = useState(null)
   const [snackOpen, setSnackOpen] = useState(false);
   const [alert, setAlert] = useState({severity: 'success', message:''})
 

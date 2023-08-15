@@ -64,7 +64,7 @@ router.get('/user', validateToken, async (req: CustomRequest, res: express.Respo
     }
     
     try {
-        const foundUser = await User.findById(req.user).select('-password')
+        const foundUser = await User.findById(req.user).select('-password').populate({path: 'group', select: 'requests'})
         res.status(200).json(foundUser);
     } catch(err) {
         res.status(400).json({error: "User not found..."});
@@ -135,7 +135,7 @@ router.get('/search/:name', validateToken, async (req: express.Request, res: exp
 // Edit User
 router.put('/:id', validateToken, async (req: express.Request, res: express.Response) => {
     try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body)
+        const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true})
         const {password, ...rest} = updatedUser._doc
         res.status(200).json(rest);
     } catch (err) {

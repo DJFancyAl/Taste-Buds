@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ThemeContext } from '../Context/ThemeContext';
 import { UserContext } from '../Context/UserContext';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import Badge from '@mui/material/Badge';
 import { styled } from '@mui/material/styles';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
@@ -67,6 +68,7 @@ const BrandBar = () => {
   const {darkMode, setDarkMode} = useContext(ThemeContext)
   const {user, setUser} = useContext(UserContext)
   const [open, setOpen] = useState(false)
+  const [requests, setRequests] = useState(0)
 
   // Dark Mode Switch
   const handleSwitch = () => {
@@ -89,6 +91,10 @@ const BrandBar = () => {
       }
       setOpen(!open)
   };
+
+  useEffect(() => {
+    if(user && user.group && user.group.requests) setRequests(user.group.requests.length)
+  }, [user])
   
   return (
       <Box sx={{ flexGrow: 1, pb: 3 }}>
@@ -109,9 +115,13 @@ const BrandBar = () => {
                   <img src="/logo.png" alt="Taste Buds Logo" height={40} />
                 </Link>
               </Box>
-              <IconButton onClick={logout}>
-                <Avatar variant='rounded' alt={user.username} src="/static/images/avatar/1.jpg" />
-              </IconButton>
+              <Link to='/user/group'>
+                <IconButton>
+                  <Badge badgeContent={requests} color="secondary">
+                    <Avatar variant='rounded' alt={user.username} src="/static/images/avatar/1.jpg" />
+                  </Badge>
+                </IconButton>
+              </Link>
               <FormControlLabel onClick={handleSwitch} control={<MaterialUISwitch sx={{ ml:4, my: 1 }} defaultChecked />} />
               </Toolbar>
           </AppBar>
