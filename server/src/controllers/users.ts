@@ -2,13 +2,15 @@
 import express from 'express';
 import { User } from '../models';
 import bcrypt from 'bcrypt';
-import multer from 'multer';
-import path from 'path';
+import { createToken, validateToken } from '../JWT';
 const router = require('express').Router()
 
+interface CustomRequest extends express.Request {
+    user: string;
+}
 
 // GET All Users
-router.get('/', async (req: express.Request, res: express.Response) => {
+router.get('/', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const foundUsers = await User.find()
         res.status(200).json(foundUsers)
@@ -45,10 +47,27 @@ router.post('/', async (req: express.Request, res: express.Response) => {
     // Create User
     try {
         const createdUser = await User.create({username, password})
-        const {password: string, ...rest} = createdUser._doc
-        res.status(200).json(rest)
+        const token = createToken(createdUser._id)
+        res.status(200).json(token)
     } catch (err) {
         res.status(400).json({error: "Sorry - registration not completed."})
+    }
+})
+
+
+// Get User Data
+router.get('/user', validateToken, async (req: CustomRequest, res: express.Response) => {
+    const authHeader = req.headers['authorization'];
+    
+    if (!authHeader) {
+        return res.status(401).json({ message: 'Authorization missing!' });
+    }
+    
+    try {
+        const foundUser = await User.findById(req.user).select('-password')
+        res.status(200).json(foundUser);
+    } catch(err) {
+        res.status(400).json({error: "User not found..."});
     }
 })
 
@@ -64,20 +83,19 @@ router.post('/login', async (req: express.Request, res: express.Response) => {
 
     try {
         // Get the User
-        const user = await User.findOne({username})
+        const foundUser = await User.findOne({username})
 
         // Check if user exists
-        if (!user) {
+        if (!foundUser) {
             res.status(401).json({error: "Login not succesful - User not found."})
         }
 
-        // Validate Password
-        const validPassword = await bcrypt.compare(password, user.password)
+        const validPassword = await bcrypt.compare(password, foundUser.password)
         if (!validPassword){
             res.status(401).json({error: "Login not successful - Invalid Password."})
         } else {
-            const {password, ...rest} = user._doc;
-            res.status(200).json(rest)
+            const token = createToken(foundUser._id)
+            res.status(200).json(token)
         }
     } catch (err) {
         res.status(400).json({error: "Sorry - login not completed."})
@@ -86,21 +104,27 @@ router.post('/login', async (req: express.Request, res: express.Response) => {
 
 
 // Search for User
-router.get('/search/:name', async (req: express.Request, res: express.Response) => {
+router.get('/search/:name', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const foundUsers = await User.find({
             $or: [
               { username: req.params.name },
               { name: req.params.name }
-            ],
-            
+            ]    
           }).select('username name group')
 
-        if(foundUsers.length === 0) {
-            res.status(400).json({error: 'User Not Found'})
-        } else {
-            res.status(200).json(foundUsers)
+          
+        for(let i =0; i < foundUsers.length; i++){
+            if(!foundUsers[i].group)
+            foundUsers.splice(i, 1)
         }
+        
+        if(foundUsers.length === 0) {
+           return res.status(400).json({error: 'User Not Found'})
+        }
+        
+        res.status(200).json(foundUsers)
+        
     } catch(err) {
         res.status(400).json({error: "Sorry - unable to find user."})
     }
@@ -108,7 +132,7 @@ router.get('/search/:name', async (req: express.Request, res: express.Response) 
 
 
 // Edit User
-router.put('/:id', async (req: express.Request, res: express.Response) => {
+router.put('/:id', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body)
         const {password, ...rest} = updatedUser._doc
@@ -119,7 +143,7 @@ router.put('/:id', async (req: express.Request, res: express.Response) => {
 })
 
 // Delete User
-router.delete('/:id', async (req: express.Request, res: express.Response) => {
+router.delete('/:id', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const deletedUser = await User.findByIdAndDelete(req.params.id)
         res.status(200).json("User deleted!")

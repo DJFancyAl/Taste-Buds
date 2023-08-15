@@ -25,16 +25,15 @@ const CreateGroup = ( { userId, setUser } ) => {
     e.preventDefault()
 
     try {
-      const response = await axios.post(`http://localhost:5000/groups`,
-        {"member": userId, "description": description, "type": type},
-        {
-            headers: {
-            'Content-Type': 'application/json'
-            }
-        }
-      ) 
-      localStorage.setItem("user", JSON.stringify(response.data))
-      setUser(response.data)
+      const token = localStorage.getItem('token')
+      if(token) {
+        const response = await axios.post(`http://localhost:5000/groups`,
+          {"member": userId, "description": description, "type": type},
+          { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}}
+        ) 
+        localStorage.setItem("user", JSON.stringify(response.data))
+        setUser(response.data)
+      }
     } catch (err) {
       console.log(err)
     }

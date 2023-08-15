@@ -1,11 +1,12 @@
 // Dependencies
 import express from 'express';
 import { Group, User } from '../models';
+import { validateToken } from '../JWT';
 const router = require('express').Router()
 
 
 // GET All Groups
-router.get('/', async (req: express.Request, res: express.Response) => {
+router.get('/', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         res.status(200).json("All Groups Rt.")
     } catch (err) {
@@ -15,7 +16,7 @@ router.get('/', async (req: express.Request, res: express.Response) => {
 
 
 // Create New Group
-router.post('/', async (req: express.Request, res: express.Response) => {
+router.post('/', validateToken, async (req: express.Request, res: express.Response) => {
     const { member, description, type } = req.body
 
     // Check if member is provided
@@ -40,7 +41,7 @@ router.post('/', async (req: express.Request, res: express.Response) => {
 
 
 // Get One Group
-router.get('/:id', async (req: express.Request, res: express.Response) => {
+router.get('/:id', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const foundGroup = await Group.findById(req.params.id).populate({path: 'members', select: 'name username date bio pic'}).populate({path: 'requests', select: 'name username'}).select('-days')
         res.status(200).json(foundGroup)
@@ -51,7 +52,7 @@ router.get('/:id', async (req: express.Request, res: express.Response) => {
 
 
 // Edit Group
-router.put('/:id', async (req: express.Request, res: express.Response) => {
+router.put('/:id', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const updatedGroup = await Group.findByIdAndUpdate(req.params.id, req.body)
         res.status(200).json("Group Updated!")
@@ -62,7 +63,7 @@ router.put('/:id', async (req: express.Request, res: express.Response) => {
 
 
 // Create Request
-router.get('/request/:budId/:userId', async (req: express.Request, res: express.Response) => {
+router.get('/request/:budId/:userId', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const foundGroup = await User.findById(req.params.budId).select('group')
         const updatedGroup = await Group.findByIdAndUpdate(
@@ -77,26 +78,30 @@ router.get('/request/:budId/:userId', async (req: express.Request, res: express.
 
 
 // Add Member
-router.put('/:groupId/:userId', async (req: express.Request, res: express.Response) => {
+router.get('/:groupId/:userId', validateToken, async (req: express.Request, res: express.Response) => {
     try {
-        const foundGroup = await Group.findByIdAndUpdate(
-            req.params.groupId,
-            { $pull: {'requests': req.params.userId}, $addToSet: {'members': req.params.userId} }
-        )
         const foundUser = await User.findByIdAndUpdate(
             req.params.userId,
-            {group: req.params.groupId}
+            {group: req.params.groupId},
+            {new: true}
         )
+
+        const foundGroup = await Group.findByIdAndUpdate(
+            req.params.groupId,
+            { $pull: {'requests': req.params.userId}, $addToSet: {'members': foundUser} },
+            {new: true}
+        ).populate({path: 'members', select: '-password'})
+
         res.status(200).json(foundGroup)
     } catch (err) {
-        res.status(400).json({error: err})
+        res.status(400).json({error: 'Sorry - unable to add member.'})
     }
 })
 
 // Delete Member
-router.delete('/:groupId/:userId', async (req: express.Request, res: express.Response) => {
+router.delete('/:groupId/:userId', validateToken, async (req: express.Request, res: express.Response) => {
     try {
-        const foundGroup = await Group.findByIdAndUpdate(req.params.groupId, {$pull: {'members': req.params.userId}})
+        const foundGroup = await Group.findByIdAndUpdate(req.params.groupId, {$pull: {'members': req.params.userId}}, {new: true})
         const foundUser = await User.findByIdAndUpdate(req.params.userId, {'group': null}, { new: true }).select('-password')
         if (foundGroup.members.length === 0) {
             await Group.findByIdAndDelete(req.params.groupId)

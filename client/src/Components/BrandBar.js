@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { ThemeContext } from '../Context/ThemeContext';
 import { UserContext } from '../Context/UserContext';
+import { useNavigate } from 'react-router-dom';
 import NavBar from './NavBar';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -62,6 +63,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 const BrandBar = () => {
   // State
+  const navigate = useNavigate()
   const {darkMode, setDarkMode} = useContext(ThemeContext)
   const {user, setUser} = useContext(UserContext)
   const [open, setOpen] = useState(false)
@@ -73,8 +75,9 @@ const BrandBar = () => {
 
   // Handle Logout
   const logout = () => {
-    localStorage.removeItem('user')
-    setUser({})
+    localStorage.removeItem('token')
+    setUser(null)
+    navigate('/')
   }
 
 

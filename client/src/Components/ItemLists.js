@@ -100,7 +100,7 @@ const ItemLists = ( { group }) => {
                 </Box>
                 <Box
                     component="form"
-                    noValidate
+                    
                     autoComplete="off"
                     onSubmit={handleSubmit}
                     sx={{my: 3, display: 'flex'}}
@@ -112,7 +112,6 @@ const ItemLists = ( { group }) => {
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            // value={age}
                             label="Type"
                             required
                             value={itemType}

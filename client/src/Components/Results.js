@@ -30,13 +30,13 @@ const Results = ( { today, setToday }) => {
     // Handle Delete Selections
     const deleteSelections = async () => {
         try {
-            const response = await axios.put(`http://localhost:5000/days/${today._id}/${user._id}`,{headers: {'Content-Type': 'application/json'}})
+            const token = localStorage.getItem('token')
+            const response = await axios.get(`http://localhost:5000/days/${today._id}/${user._id}`,{headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
             setToday(response.data)
           } catch (err) {
             console.log(err)
           }
     }
-
 
     // Today's Results
     const summary = () => {

@@ -1,7 +1,13 @@
 // Dependencies
 require('dotenv').config()
 import express from 'express';
-import { sign, verify } from 'jsonwebtoken';
+import { sign, verify, JwtPayload } from 'jsonwebtoken';
+
+
+interface CustomRequest extends express.Request {
+    user: string;
+}
+
 
 // Create Token Function
 export const createToken = (userId: string) => {
@@ -10,14 +16,14 @@ export const createToken = (userId: string) => {
         expiresIn: 60 * 60 * 24 * 30 // expires in 30 days.
     }
 
-    const token = sign(payload, process.env.JWT_SECRET)
+    const token = sign(payload, process.env.JWT_SECRET || '')
 
     return token
 }
 
 
 // Validate Tokens
-export const validateToken = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+export const validateToken = (req: CustomRequest, res: express.Response, next: express.NextFunction) => {
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
@@ -26,8 +32,7 @@ export const validateToken = (req: express.Request, res: express.Response, next:
     }
 
     try {
-        const decodedToken = verify(token, process.env.JWT_SECRET);
-    
+        const decodedToken = verify(token, process.env.JWT_SECRET || '') as JwtPayload;
         req.user = decodedToken.userId;
     
         next();

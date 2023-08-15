@@ -12,7 +12,7 @@ const Start = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(localStorage.getItem('user')){
+    if(localStorage.getItem('token')){
       navigate('/user')
     }
   }, [])

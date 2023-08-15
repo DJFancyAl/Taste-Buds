@@ -27,6 +27,7 @@ import axios from 'axios';
 const GroupInfo = ( { group }) => {
   // State
   const theme = useTheme()
+  const token = localStorage.getItem('token')
   const {user, setUser} = useContext(UserContext)
   const [promptOpen, setPromptOpen] = useState(false)
   const [snackOpen, setSnackOpen] = useState(false);
@@ -37,7 +38,8 @@ const GroupInfo = ( { group }) => {
   // Handle Accept Request
   const handleAccept = async (member) => {
     try {
-      const response = await axios.put(`http://localhost:5000/groups/${group}/${member}`, {headers: {'Content-Type': 'application/json'}})
+      const response = await axios.get(`http://localhost:5000/groups/${group}/${member}`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+      setData(response.data)
       setAlert({severity: 'success', message: 'Join Request Accepted!'})
       setSnackOpen(true)
     } catch (err) {
@@ -50,7 +52,7 @@ const GroupInfo = ( { group }) => {
   const handleReject = async (member) => {
     try {
       const removed = requests.filter((request) => request._id !== member)
-      const response = await axios.put(`http://localhost:5000/groups/${group}`, {"requests": removed}, { headers: {'Content-Type': 'application/json'}})
+      const response = await axios.put(`http://localhost:5000/groups/${group}`, {"requests": removed}, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setData({...data, requests: removed})
       setAlert({severity: 'success', message: 'Join Request Rejected.'})
       setSnackOpen(true)
@@ -64,7 +66,7 @@ const GroupInfo = ( { group }) => {
   // Handle Leave Group
   const handleLeave = async () => {
     try {
-      const response = await axios.delete(`http://localhost:5000/groups/${group}/${user._id}`)
+      const response = await axios.delete(`http://localhost:5000/groups/${group}/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setUser(response.data)
     } catch (err) {
       setAlert({severity: 'error', message: 'Leave Group failed...'})
@@ -118,7 +120,7 @@ const GroupInfo = ( { group }) => {
               </Box>
             }
             >
-            <ListItemText sx={{mb: 3}} primary={request.name} secondary={request.username} primaryTypographyProps={{fontWeight: 'bold'}} secondaryTypographyProps={{color: theme.palette.primary.main}} />
+            <ListItemText sx={{mb: 3}} primary={request.name} secondary={request.username} primaryTypographyProps={{fontWeight: 'bold', color: theme.palette.primary.main}} secondaryTypographyProps={{color: theme.palette.primary.main}} />
           </ListItem>
         )
       })}
@@ -137,12 +139,12 @@ const GroupInfo = ( { group }) => {
   mailto:?subject=Be My Bud | Taste Buds Meal App
   &body=Join my group so we we can plan our meals together! Taste Buds is an app where we can select our desired meal options each day. It will help us make tough decisions and save us time! Visit this page to join: http://localhost:5000 %0D%0A%0D%0ASee you soon, Bud!
   `
-  
+
   // Get Group Info
   useEffect(() => {
     const getGroup = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/groups/${group}`)
+        const response = await axios.get(`http://localhost:5000/groups/${group}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
         setData(response.data)
       } catch (err) {
         console.log(err)
@@ -150,7 +152,7 @@ const GroupInfo = ( { group }) => {
     }
 
     getGroup()
-  }, [group, data])
+  }, [group])
 
   return (
     <>

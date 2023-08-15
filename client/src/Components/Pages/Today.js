@@ -16,7 +16,8 @@ const Today = () => {
 
   const getToday = async () => {
     try {
-      const response  = await axios.get(`http://localhost:5000/days/${user.group}/today`)
+      const token = localStorage.getItem('token')
+      const response  = await axios.get(`http://localhost:5000/days/${user.group}/today`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setToday(response.data)
     } catch(err) {
       console.log(err)

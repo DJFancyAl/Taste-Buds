@@ -16,7 +16,7 @@ const Profile = () => {
     
     return (
         <Container>
-            <Stack direction='row' spacing={2} sx={{alignItems: 'center', mb: 2}} divider={<Divider orientation="vertical" flexItem />}>
+            <Stack direction='row' spacing={2} sx={{alignItems: 'center', pb: 2}} divider={<Divider orientation="vertical" flexItem />}>
                 <Avatar
                     alt={user.username}
                     src="/static/images/avatar/1.jpg"
@@ -24,9 +24,8 @@ const Profile = () => {
                     sx={{ width: 80, height: 80 }}
                 />
                 <Box>
-                <Typography variant="h3">{name}</Typography>
-                <Typography variant="subtitle1" gutterBottom>{username} joined on {format(inputDate, 'M/d/yyyy')}</Typography>
-
+                    <Typography variant="h3">{name}</Typography>
+                    <Typography variant="subtitle1" gutterBottom>{username} joined on {format(inputDate, 'M/d/yyyy')}</Typography>
                 </Box>
             </Stack>
             <Divider sx={{my:4}} />

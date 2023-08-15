@@ -3,13 +3,12 @@ import { Types } from 'mongoose'
 import express from 'express';
 import { Group, Day, User } from '../models';
 import { createSummary } from '../summary';
-import { create } from 'domain';
+import { validateToken } from '../JWT';
 const router = require('express').Router()
 const ObjectId = Types.ObjectId
 
-
 // GET All Days (By Group)
-router.get('/:id', async (req: express.Request, res: express.Response) => {
+router.get('/:id', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const foundGroup = await Group.findById(req.params.id)
         res.status(200).json(foundGroup.days)
@@ -19,7 +18,7 @@ router.get('/:id', async (req: express.Request, res: express.Response) => {
 })
 
 // Get Current Day (By Group)
-router.get('/:id/today', async (req: express.Request, res: express.Response) => {
+router.get('/:id/today', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const today = new Date()
         const day = await Day.findOne({
@@ -55,55 +54,64 @@ router.get('/:id/today', async (req: express.Request, res: express.Response) => 
 
 
 // Add Selections (By Day ID)
-router.post('/:id', async (req: express.Request, res: express.Response) => {
+router.post('/:id', validateToken, async (req: express.Request, res: express.Response) => {
     const { member, selection } = req.body
     try {
-        const today = await Day.findByIdAndUpdate(
-                req.params.id,
-                {$addToSet: {'selections': {member: new ObjectId(member), selection: selection}}},
-                {new: true}
-            ).populate({
-                path: 'group',
-                select: 'items',
-                populate: {
-                  path: 'members items',
-                  select: 'name username'
-                }
-              }).populate({
-                path: 'selections',
-                populate: {
-                  path: 'member',
-                  model: 'User',
-                  select: 'name username'
-                }
-              })
+      const today = await Day.findByIdAndUpdate(
+              req.params.id,
+              {$addToSet: {'selections': {member: new ObjectId(member), selection: selection}}},
+              {new: true}
+        ).populate({
+            path: 'group',
+            select: 'items',
+            populate: {
+              path: 'members items',
+              select: 'name username'
+            }
+          }).populate({
+            path: 'selections',
+            populate: {
+              path: 'member',
+              model: 'User',
+              select: 'name username'
+            }
+          })
 
         
-        if(today.group.members.length === today.selections.length){
-            const results = await createSummary(today.selections)
-            today.summary = results
-            await today.save()
-        }
+      if(today.group.members.length === today.selections.length){
+          const results = await createSummary(today.selections)
+          today.summary = results
+          await today.save()
+      }
 
-        res.status(200).json(today)
+      res.status(200).json(today)
     } catch (err) {
         res.status(400).json({error: 'Sorry - unable sot submit choices.'})
     }
 })
 
 
-// Edit Day
-router.put('/:dayId/:userId', async (req: express.Request, res: express.Response) => {
+// Reset Choices
+router.get('/:dayId/:userId', validateToken, async (req: express.Request, res: express.Response) => {
     try {
-        const today = await Day.findById(req.params.dayId).populate({
-                    path: 'group',
-                    select: 'items',
-                    populate: {
-                      path: 'members items',
-                      select: 'name username'
-                    }
-                  })
-        today.selections = today.selections.filter((selection: { member: string; }) => selection.member !== req.params.userId)
+        const today = await Day.findById(req.params.dayId)
+        .populate({
+          path: 'group',
+          select: 'items',
+          populate: {
+            path: 'members items',
+            select: 'name username'
+          }
+        })
+        .populate({
+          path: 'selections',
+          populate: {
+            path: 'member',
+            select: 'name, username'
+          }
+        })
+
+        today.selections = today.selections.filter((selection: any) => selection.member._id !== req.params.userId)
         const updatedToday = await today.save()
         res.status(200).json(updatedToday)
     } catch (err) {

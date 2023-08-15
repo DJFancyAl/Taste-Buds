@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { UserContext } from '../Context/UserContext';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -8,8 +9,8 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import axios from 'axios';
 
-const UpdateProfile = ({ user, setUser }) => {
-    const {_id, pic} = user
+const UpdateProfile = () => {
+    const {user, setUser} = useContext(UserContext)
     const [snackOpen, setSnackOpen] = useState(false);
     const [alert, setAlert] = useState({severity: '', message:''})
     const [formData, setFormData] = useState({});
@@ -21,7 +22,7 @@ const UpdateProfile = ({ user, setUser }) => {
         const formData = new FormData();
         formData.append('profileImage', selectedFile);
 
-        const response = await axios.post(`http://localhost:5000/users/${_id}/upload`, formData, {
+        const response = await axios.post(`http://localhost:5000/users/${user._id}/upload`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             }
@@ -34,17 +35,13 @@ const UpdateProfile = ({ user, setUser }) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const response = await axios.put(`http://localhost:5000/users/${_id}`,
-                formData,
-                {
-                    headers: {
-                    'Content-Type': 'application/json'
-                    }
-                }
-            )
-            setUser(response.data)
-            setAlert({severity: 'success', message: 'Profile Updated!'})
-            setSnackOpen(true)
+            const token = localStorage.getItem('token')
+            if(token) {
+                const response = await axios.put(`http://localhost:5000/users/${user._id}`, formData, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+                setUser(response.data)
+                setAlert({severity: 'success', message: 'Profile Updated!'})
+                setSnackOpen(true)
+            }
         } catch (e) {
             setAlert({severity: 'error', message: 'Update failed...'})
             setSnackOpen(true)

@@ -24,21 +24,15 @@ const Register = () => {
     const handleClose = (e, reason) => {
         if (reason === 'clickaway') return;    
         setSnackOpen(false);
-      };
+    };
     
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
             if (formData.password === formData.confirmPassword) {
-                const response = await axios.post('http://localhost:5000/users',
-                formData,
-                {
-                    headers: {
-                    'Content-Type': 'application/json'
-                    }
-                })
-                if(response.data) localStorage.setItem("user", JSON.stringify(response.data))
-                navigate('/user/group')
+                const response = await axios.post('http://localhost:5000/users', formData, { headers: {'Content-Type': 'application/json'}})
+                if(response.data) localStorage.setItem("token", response.data)
+                navigate('/user/profile')
             } else {
                 setAlert({severity: 'error', message: `Passwords don't match...`})
                 setSnackOpen(true)

@@ -20,6 +20,7 @@ import axios from 'axios';
 const LinkGroup = ( { userId } ) => {
     // State
     const theme = useTheme()
+    const token = localStorage.getItem('token')
     const [snackOpen, setSnackOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({severity: 'success', message:''})
@@ -32,11 +33,7 @@ const LinkGroup = ( { userId } ) => {
         e.preventDefault()
         try {
             const response = await axios.get(`http://localhost:5000/users/search/${search}`,
-            {
-                headers: {
-                'Content-Type': 'application/json'
-                }
-            })
+            { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
 
             setBuds(response.data)
             setAlert({severity: 'success', message: 'Found user(s)!'})
@@ -57,11 +54,7 @@ const LinkGroup = ( { userId } ) => {
     const handleJoin = async (budId) => {
         try {
             const response = await axios.get(`http://localhost:5000/groups/request/${budId}/${userId}`,
-            {
-                headers: {
-                'Content-Type': 'application/json'
-                }
-            })
+            { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
             
             setWaiting(true)
             setSearch('')
