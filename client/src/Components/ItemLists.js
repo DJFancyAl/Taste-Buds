@@ -58,14 +58,15 @@ const ItemLists = ( { group }) => {
     }
     
     
-    // Handle Submit
+    // Add Item
     const handleSubmit = async (e) => {
         e.preventDefault()
         
         try {
+            const token = localStorage.getItem('token')
             const response  = await axios.post(`http://localhost:5000/groups/${group._id}/items`,
             {'name': itemName, 'type': itemType},
-            {headers: {'Content-Type': 'application/json'}})
+            { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
             
             setItems([response.data, ...items])
             setItemName('')

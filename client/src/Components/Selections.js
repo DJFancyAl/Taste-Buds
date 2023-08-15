@@ -30,13 +30,10 @@ const Selections = ( { choices, today, setToday, userId } ) => {
 
             if(!submitted) {
                 setLoading(true)
+                const token = localStorage.getItem('token')
                 const response = await axios.post(`http://localhost:5000/days/${today._id}`,
                 {"member": userId, "selection": choices },
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
+                {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}}
                 )
                 setToday(response.data)
                 setLoading(false)

@@ -16,17 +16,15 @@ const Today = () => {
   const [today, setToday] = useState({group: {items: []}, selections: []})
   const [choices, setChoices] = useState(defaultChoices)
 
-
   const getToday = async () => {
     try {
       const token = localStorage.getItem('token')
-      const response  = await axios.get(`http://localhost:5000/days/${user.group}/today`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+      const response  = await axios.get(`http://localhost:5000/days/${user.group._id}/today`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setToday(response.data)
     } catch(err) {
       console.log(err)
     }
   }
-
 
   useEffect(() => {
     getToday()

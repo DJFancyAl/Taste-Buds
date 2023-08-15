@@ -115,7 +115,7 @@ router.delete('/:groupId/:userId', validateToken, async (req: express.Request, r
 })
 
 // Add Item
-router.post('/:id/items', async (req: express.Request, res: express.Response) => {
+router.post('/:id/items', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const foundGroup = await Group.findByIdAndUpdate(req.params.id,{$addToSet: {'items': req.body}})
         res.status(200).json(req.body)
@@ -125,7 +125,7 @@ router.post('/:id/items', async (req: express.Request, res: express.Response) =>
 })
 
 // Delete Item
-router.delete('/:id/items', async (req: express.Request, res: express.Response) => {
+router.delete('/:id/items', validateToken, async (req: express.Request, res: express.Response) => {
     try {
         const foundGroup = await Group.findByIdAndUpdate(req.params.id,{$pull: {'items': req.body}})
         res.status(200).json("Item Deleted!")

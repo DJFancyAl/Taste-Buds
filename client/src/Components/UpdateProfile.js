@@ -28,21 +28,7 @@ const UpdateProfile = ( { updateProfile }) => {
     // Update User Profile
     const handleSubmit = async (e) => {
         e.preventDefault()
-
         updateProfile(formData)
-
-        // try {
-        //     const token = localStorage.getItem('token')
-        //     if(token) {
-        //         const response = await axios.put(`http://localhost:5000/users/${user._id}`, formData, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
-        //         setUser(response.data)
-        //         setAlert({severity: 'success', message: 'Profile Updated!'})
-        //         setSnackOpen(true)
-        //     }
-        // } catch (e) {
-        //     setAlert({severity: 'error', message: 'Update failed...'})
-        //     setSnackOpen(true)
-        // }
     }
 
 

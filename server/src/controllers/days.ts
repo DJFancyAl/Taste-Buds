@@ -58,30 +58,30 @@ router.post('/:id', validateToken, async (req: express.Request, res: express.Res
     const { member, selection } = req.body
     try {
       const today = await Day.findByIdAndUpdate(
-              req.params.id,
-              {$addToSet: {'selections': {member: new ObjectId(member), selection: selection}}},
-              {new: true}
+          req.params.id,
+          {$addToSet: {'selections': {member: new ObjectId(member), selection: selection}}},
+          {new: true}
         ).populate({
-            path: 'group',
-            select: 'items',
-            populate: {
-              path: 'members items',
-              select: 'name username'
-            }
-          }).populate({
-            path: 'selections',
-            populate: {
-              path: 'member',
-              model: 'User',
-              select: 'name username'
-            }
-          })
+          path: 'group',
+          select: 'items',
+          populate: {
+            path: 'members items',
+            select: 'name username'
+          }
+        }).populate({
+          path: 'selections',
+          populate: {
+            path: 'member',
+            model: 'User',
+            select: 'name username'
+          }
+        })
 
         
       if(today.group.members.length === today.selections.length){
-          const results = await createSummary(today.selections)
-          today.summary = results
-          await today.save()
+        const results = await createSummary(today.selections)
+        today.summary = results
+        await today.save()
       }
 
       res.status(200).json(today)

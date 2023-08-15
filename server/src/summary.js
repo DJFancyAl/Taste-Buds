@@ -12,8 +12,8 @@ export const createSummary = async (selections)  => {
 
   selections.forEach(choice => {
     choices += `* ${choice.member.name}: `
-    choice.selection.forEach(item => {
-      choices += `${item.name} (${item.type}), `
+    choice.selection.forEach((item, index) => {
+      choices += `${index+1}. ${item.name} (${item.type}), `
     })
     choices += '\n'
   })
