@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import { LightTheme } from './Themes/LightTheme';
 import { DarkTheme } from './Themes/DarkTheme';
@@ -14,8 +14,18 @@ import History from "./Components/Pages/History";
 import Profile from "./Components/Pages/Profile";
 
 function App() {
+  // State
   const [darkMode, setDarkMode] = useState(true)
   const theme = darkMode ? DarkTheme : LightTheme
+
+  // Retrieves Dark Mode from Local Storage
+  useEffect(() => {
+    const usingDarkMode = localStorage.getItem('darkMode')
+    if(usingDarkMode){
+      const darkModeJSON = JSON.parse(usingDarkMode)
+      setDarkMode(darkModeJSON)
+    }
+  }, [])
 
   return (
     <ThemeContext.Provider value={{darkMode, setDarkMode}}>

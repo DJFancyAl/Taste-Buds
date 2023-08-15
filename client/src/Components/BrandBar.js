@@ -71,6 +71,7 @@ const BrandBar = () => {
   // Dark Mode Switch
   const handleSwitch = () => {
     setDarkMode(!darkMode)
+    localStorage.setItem('darkMode', !darkMode)
   }
 
   // Handle Logout
