@@ -11,8 +11,7 @@ const groupSchema = new Schema({
         name: {type: String},
         type: {type: String}
     }}],
-    requests: [{type: Schema.Types.ObjectId, ref: 'User'}],
-    // days: [{type: Schema.Types.ObjectId, ref: 'Day'}]
+    requests: [{type: Schema.Types.ObjectId, ref: 'User'}]
 });
 
 // Export

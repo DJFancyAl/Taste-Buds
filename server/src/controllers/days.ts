@@ -9,47 +9,47 @@ const ObjectId = Types.ObjectId
 
 // GET All Days (By Group)
 router.get('/:id', validateToken, async (req: express.Request, res: express.Response) => {
-    try {
-        const foundGroup = await Group.findById(req.params.id)
-        res.status(200).json(foundGroup.days)
-    } catch (err) {
-        res.status(400).json({error: err})
-    }
+  try {
+    const foundGroup = await Group.findById(req.params.id)
+    res.status(200).json(foundGroup.days)
+  } catch (err) {
+    res.status(400).json({error: err})
+  }
 })
 
 // Get Current Day (By Group)
 router.get('/:id/today', validateToken, async (req: express.Request, res: express.Response) => {
-    try {
-        const today = new Date()
-        const day = await Day.findOne({
-            group: req.params.id,
-            date: today.toLocaleDateString()
-          }).populate({
-            path: 'group',
-            select: 'items',
+  try {
+    const today = new Date()
+    const day = await Day.findOne({
+        group: req.params.id,
+        date: today.toLocaleDateString()
+      }).populate({
+        path: 'group',
+        select: 'items',
+        populate: {
+          path: 'members items',
+          select: 'name username'
+        }
+      }).populate({
+            path: 'selections',
             populate: {
-              path: 'members items',
+              path: 'member',
+              model: 'User',
               select: 'name username'
             }
-          }).populate({
-                path: 'selections',
-                populate: {
-                  path: 'member',
-                  model: 'User',
-                  select: 'name username'
-                }
-            })
+        })
 
-          
-          if(!day){
-            const createdDay = await Day.create({group: req.params.id})
-            res.status(200).json(createdDay)
-        } else {
-            res.status(200).json(day)
-        }
-    } catch (err) {
-        res.status(400).json({error: "Sorry - unable to fetch today's info."})
+      
+      if(!day){
+        const createdDay = await Day.create({group: req.params.id})
+        res.status(200).json(createdDay)
+    } else {
+        res.status(200).json(day)
     }
+  } catch (err) {
+    res.status(400).json({error: "Sorry - unable to fetch today's info."})
+  }
 })
 
 
