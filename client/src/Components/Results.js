@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Divider, useTheme } from '@mui/material';
+import { Divider, Stack, useTheme } from '@mui/material';
 import { UserContext } from '../Context/UserContext';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -10,6 +10,8 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import Avatar from '@mui/material/Avatar';
 import LinearProgress from '@mui/material/LinearProgress';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
@@ -25,7 +27,6 @@ const Results = ( { today, setToday }) => {
 
     // Percent of Progress (for progress bar)
     const progress = (today.selections.length/today.group.members.length) * 100
-
 
     // Handle Delete Selections
     const deleteSelections = async () => {
@@ -57,7 +58,7 @@ const Results = ( { today, setToday }) => {
                             <List
                                 sx={{bgcolor: theme.palette.primary.main}}
                                 subheader={
-                                    <ListSubheader component="div" id="nested-list-subheader">{selection.member.name}'s Choices:</ListSubheader>
+                                    <ListSubheader component="div" id="nested-list-subheader"><Stack direction='row' gap={1} sx={{alignItems: 'center', py: 1}}><Avatar src={selection.member.pic} variant='square' />{selection.member.name}'s Choices:</Stack></ListSubheader>
                                 }>
                                 {selection.selection.map((item, j) => {
                                     return (

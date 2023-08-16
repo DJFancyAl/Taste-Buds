@@ -6,6 +6,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -82,8 +83,13 @@ const GroupInfo = ( { group }) => {
         return (
           <Card key={member._id}>
             <CardContent>
-            <Typography variant="h6">{member.name}</Typography>
-            <Typography variant="subtitle2" gutterBottom>{member.username}</Typography>
+              <Stack direction='row' gap={2} sx={{alignItems: 'center', pb: 1}}>
+                <Avatar alt={member.username} src={member.pic} variant="square" sx={{ width: 48, height: 48 }} />
+                <Box>
+                  <Typography variant="h6">{member.name}</Typography>
+                  <Typography variant="subtitle2">{member.username}</Typography>
+                </Box>
+              </Stack>
             <Divider />
             <Typography variant="body2" sx={{mt:4}}>{member.bio}</Typography>
             </CardContent>

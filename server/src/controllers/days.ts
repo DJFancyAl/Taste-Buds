@@ -36,7 +36,7 @@ router.get('/:id/today', validateToken, async (req: express.Request, res: expres
             populate: {
               path: 'member',
               model: 'User',
-              select: 'name username'
+              select: 'name username pic'
             }
         })
 
@@ -73,7 +73,7 @@ router.post('/:id', validateToken, async (req: express.Request, res: express.Res
           populate: {
             path: 'member',
             model: 'User',
-            select: 'name username'
+            select: 'name username pic'
           }
         })
 
