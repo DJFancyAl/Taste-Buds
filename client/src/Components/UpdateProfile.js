@@ -4,26 +4,13 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import FileBase64 from 'react-file-base64';
 
 
 const UpdateProfile = ( { updateProfile }) => {
     const {user} = useContext(UserContext)
-    const [formData, setFormData] = useState({username: '', name: '', bio: ''});
-    const [selectedFile, setSelectedFile] = useState(null)
-
-
-    // const handleUpload = async () => {
-    //     const formData = new FormData();
-        // formData.append('profileImage', selectedFile);
-
-        // const response = await axios.post(`http://localhost:5000/users/${user._id}/upload`, formData, {
-        //     headers: {
-        //         'Content-Type': 'multipart/form-data',
-        //     }
-        // })
-
-        // setUser(response.data)
-    // }
+    const [formData, setFormData] = useState({username: '', name: '', bio: '', image: null});
+    const [file, setFile] = useState(null);
 
     // Update User Profile
     const handleSubmit = async (e) => {
@@ -83,15 +70,11 @@ const UpdateProfile = ( { updateProfile }) => {
                 rows={3}
                 onChange={(e) => setFormData({...formData, bio: e.target.value})}
                 />
-                {/* <Stack direction="row" spacing={2} sx={{mx: 'auto'}}>
-                    <TextField
-                        type='file'
-                        accept="image/*"
-                        onChange={handleFileChange}
-                    />
-                    <Button variant="contained" onClick={handleUpload}>Upload Photo</Button>
-                </Stack> */}
+            <FileBase64
+                multiple={ false }
+                onDone={({base64}) => setFormData({...formData, pic: base64})} />
             <Button type='submit' variant="contained">Update User</Button>
+            <img src={file} />
         </Box>
     )
 }

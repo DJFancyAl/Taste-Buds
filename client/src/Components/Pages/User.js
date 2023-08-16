@@ -12,6 +12,7 @@ const User = () => {
   const [snackOpen, setSnackOpen] = useState(false);
   const [alert, setAlert] = useState({severity: 'success', message:''})
 
+
   // Handle Snack Close
   const handleClose = (e, reason) => {
     if (reason === 'clickaway') return;    
@@ -27,7 +28,6 @@ useEffect(() => {
       try {
         const response = await axios.get(`http://localhost:5000/users/user`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
         setUser(response.data)
-        // navigate('/user/today')
       } catch(err) {
           if (err.response) {
               setAlert({severity: 'error', message: err.response.data.error})

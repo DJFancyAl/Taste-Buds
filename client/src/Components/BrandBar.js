@@ -118,7 +118,7 @@ const BrandBar = () => {
               <Link to='/user/group'>
                 <IconButton>
                   <Badge badgeContent={requests} color="secondary">
-                    <Avatar variant='rounded' alt={user.username} src="/static/images/avatar/1.jpg" />
+                    <Avatar variant='rounded' alt={user.username} src={user.pic} />
                   </Badge>
                 </IconButton>
               </Link>

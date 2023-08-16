@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
-import OptionList from './OptionList';
+import { Droppable } from 'react-beautiful-dnd';
 import Box from '@mui/material/Box';
+import List from '@mui/material/List';
+import FoodItem from './FoodItem';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import TextField from '@mui/material/TextField';
@@ -9,42 +11,38 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import axios from 'axios';
 
 
-const ItemLists = ( { group }) => {
+const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, filteredList, setFilteredList }) => {
     // State
     const theme = useTheme()
-    const [items, setItems] = useState([])
-    const [filteredTypes, setFilteredTypes] = useState([])
-    const [filteredList, setFilteredList] = useState([])
+    const token = localStorage.getItem('token')
     const [itemName, setItemName] = useState('')
     const [itemType, setItemType] = useState('')
+    const [snackOpen, setSnackOpen] = useState(false);
+    const [alert, setAlert] = useState({severity: 'success', message:''})
     
     
     // Delete List Item
-    const deleteItem = (id) => {
-        const newItems = items
-        newItems.splice(id, 1)
-        setItems(newItems)
-    }
-
-
-    // Filter Items
-    const filterItems = () => {
-        if(filteredTypes.length === 0) {
-            setFilteredList(items)
-        } else {
-            const filtered = items.filter((item) => {
-                return filteredTypes.includes(item.type)
-            })
-            setFilteredList(filtered)
+    const deleteItem = async (item) => {
+        setFilteredList(filteredList.filter(option => option !== item))
+        setItems(items.filter(option => option !== item))
+        try {
+            const response  = await axios.put(`http://localhost:5000/groups/${group._id}/items`,
+            item, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+            setAlert({severity: 'success', message: 'Profile Updated!'})
+            setSnackOpen(true)
+        } catch(err) {
+            setAlert({severity: 'error', message: 'Unable to delete item...'})
+            setSnackOpen(true)
         }
     }
-
 
 
     // Toggle Filters
@@ -63,11 +61,10 @@ const ItemLists = ( { group }) => {
         e.preventDefault()
         
         try {
-            const token = localStorage.getItem('token')
             const response  = await axios.post(`http://localhost:5000/groups/${group._id}/items`,
             {'name': itemName, 'type': itemType},
             { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
-            
+
             setItems([response.data, ...items])
             setItemName('')
             setItemType('')
@@ -75,18 +72,19 @@ const ItemLists = ( { group }) => {
             console.log(err)
         }
     }
+
+
+    // Handle Snackbar Close
+    const handleClose = (e, reason) => {
+        if (reason === 'clickaway') return;    
+        setSnackOpen(false);
+    };
     
     
     // Set Items
     useEffect(() => {
         setItems(group.items)
     }, [group])
-    
-
-    // Filter List
-    useEffect(() => {
-        filterItems()
-    }, [items, deleteItem])
 
 
     return (
@@ -127,8 +125,23 @@ const ItemLists = ( { group }) => {
                 </Box>
             </Box>
 
-
-            <OptionList filteredList={filteredList} deleteItem={deleteItem} />       
+            <Box sx={{bgcolor: theme.palette.primary.main, mb: 4}}>
+                <Droppable droppableId='AvailableItems'>
+                    {(provided) => (
+                        <List disablePadding ref={provided.innerRef} {...provided.droppableProps}> 
+                            {filteredList.map((item, index) => {
+                                return <FoodItem key={index} id={index} item={item} deleteItem={deleteItem} />
+                            })}
+                            {provided.placeholder}
+                        </List>
+                    )}
+                </Droppable>
+            </Box>
+            <Snackbar
+                open={snackOpen}
+                autoHideDuration={4000}
+                onClose={handleClose}
+                ><Alert variant="filled" severity={alert.severity}>{alert.message}</Alert></Snackbar>
         </>
     )
 }

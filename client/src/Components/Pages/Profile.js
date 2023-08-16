@@ -47,7 +47,7 @@ const Profile = () => {
             <Stack direction='row' spacing={2} sx={{alignItems: 'center', pb: 2}} divider={<Divider orientation="vertical" flexItem />}>
                 <Avatar
                     alt={user.username}
-                    src="/static/images/avatar/1.jpg"
+                    src={user.pic}
                     variant='rounded'
                     sx={{ width: 80, height: 80 }}
                 />

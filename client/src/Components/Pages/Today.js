@@ -14,7 +14,11 @@ const Today = () => {
   const defaultChoices = [{type:'Placeholder', name: 'Top Selection!'}, {type:'Placeholder', name: 'Second Choice'}, {type:'Placeholder', name: 'Third Option'}]
   const { user } = useContext(UserContext)
   const [today, setToday] = useState({group: {items: []}, selections: []})
+  const [items, setItems] = useState([])
+  const [filteredTypes, setFilteredTypes] = useState([])
+  const [filteredList, setFilteredList] = useState([])
   const [choices, setChoices] = useState(defaultChoices)
+
 
   const getToday = async () => {
     try {
@@ -31,6 +35,19 @@ const Today = () => {
   }, [])
 
 
+  // Filter Items
+  const filterItems = () => {
+    if(filteredTypes.length === 0) {
+        setFilteredList(items)
+    } else {
+        const filtered = items.filter((item) => {
+            return filteredTypes.includes(item.type)
+        })
+        setFilteredList(filtered)
+    }
+  }
+
+
   // Handle Drag End
   const onDragEnd = (result) => {
     const { source, destination } = result
@@ -39,12 +56,14 @@ const Today = () => {
     if(destination.droppableId === source.droppableId && destination.index === source.index) return
 
     let add
-    let availableItems = today.group.items
+    let availableItems = filteredList
+    let listedItems = items
     let selectedItems = choices
 
     if(source.droppableId === 'AvailableItems') {
       add = availableItems[source.index]
       availableItems.splice(source.index, 1)
+      listedItems = listedItems.filter(item => item !== add)
     }
     
     if(source.droppableId === 'SelectedItems') {
@@ -82,7 +101,15 @@ const Today = () => {
     }
 
     setChoices(selectedItems)
+    setItems(listedItems)
   }
+
+
+  // Filter List
+  useEffect(() => {
+    filterItems()
+  }, [items, filteredTypes])
+
 
   // If user is not in a group, then redirect to the group page.
   useEffect(() => {
@@ -98,7 +125,7 @@ const Today = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Grid container spacing={4}>
           <Grid item xs={12} lg={6}>
-            <ItemLists group={today.group} />
+            <ItemLists group={today.group} items={items} setItems={setItems} filteredTypes={filteredTypes} setFilteredTypes={setFilteredTypes} filteredList={filteredList} setFilteredList={setFilteredList} />
           </Grid>
           <Grid item xs>
             <Selections choices={choices} today={today} setToday={setToday} userId={user._id} />

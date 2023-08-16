@@ -31,7 +31,6 @@ const CreateGroup = ( { userId, setUser } ) => {
           {"member": userId, "description": description, "type": type},
           { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}}
         )
-        console.log(response.data)
         setUser(response.data)
       }
     } catch (err) {

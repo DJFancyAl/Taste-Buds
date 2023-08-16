@@ -19,7 +19,7 @@ const FoodItem = ( { id, item, deleteItem }) => {
         <>
           <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
             secondaryAction={
-              <IconButton edge="end" aria-label="delete" sx={{color: theme.palette.primary.dark}} onClick={() => deleteItem(id)}>
+              <IconButton edge="end" aria-label="delete" sx={{color: theme.palette.primary.dark}} onClick={() => deleteItem(item)}>
                 <DeleteIcon />
               </IconButton>
             }
