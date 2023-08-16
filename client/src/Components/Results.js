@@ -10,7 +10,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import LinearProgress from '@mui/material/LinearProgress';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
@@ -45,7 +44,7 @@ const Results = ( { today, setToday }) => {
             <>
                 <Box sx={{maxWidth:'1000px', textAlign: 'center', m: 'auto', p: 3, backgroundColor: theme.palette.primary.main}}>
                     <Typography variant="subtitle1" gutterBottom>Today's results are in...</Typography>
-                    <Typography variant="h5" sx={{fontWeight: 'bold'}} gutterBottom><EmojiEventsIcon /> Top Choice: {today.summary.top_choice} <EmojiEventsIcon /></Typography>
+                    <Typography className='bounce' variant="h5" sx={{fontWeight: 'bold'}} gutterBottom><EmojiEventsIcon /> Top Choice: {today.summary.top_choice} <EmojiEventsIcon /></Typography>
                     <Typography variant="h6">Alternative Choice: {today.summary.second_choice}</Typography>
                     <Divider sx={{my: 3}} />
                     <Typography variant="body2" gutterBottom>{today.summary.explanation}</Typography>

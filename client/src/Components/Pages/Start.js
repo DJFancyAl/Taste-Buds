@@ -22,7 +22,7 @@ const Start = () => {
     <Container sx={{minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: 5}}>
       <Box>
         <Link to='/'>
-          <img src="/logo.png" alt="Taste Buds Logo" />
+          <img className='bounce' src="/logo.png" alt="Taste Buds Logo" />
         </Link>
         <Typography variant="h1" gutterBottom sx={{pt: 5}}>Let's Get Started!</Typography>
         <Typography variant="subtitle1" gutterBottom sx={{mb:5}}>

@@ -10,13 +10,14 @@ import Select from '@mui/material/Select';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import JoinFullIcon from '@mui/icons-material/JoinFull';
+import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
 const CreateGroup = ( { userId, setUser } ) => {
+  const [loading, setLoading] = useState(false);
   const [type, setType] = useState('')
   const [description, setDescription] = useState('')
   const [snackOpen, setSnackOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState({severity: 'success', message:''})
 
 
@@ -27,6 +28,7 @@ const CreateGroup = ( { userId, setUser } ) => {
     try {
       const token = localStorage.getItem('token')
       if(token) {
+        setLoading(true)
         const response = await axios.post(`http://localhost:5000/groups`,
           {"member": userId, "description": description, "type": type},
           { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}}
@@ -36,6 +38,7 @@ const CreateGroup = ( { userId, setUser } ) => {
     } catch (err) {
       console.log(err)
     }
+    setLoading(false)
   }
 
   // Handle Snackbar Close
@@ -84,7 +87,10 @@ const CreateGroup = ( { userId, setUser } ) => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               />
-            <Button type='submit' variant="contained"><JoinFullIcon />Create Group</Button>
+            <Box sx={{position: 'relative'}}>
+              <Button type='submit' variant="contained" fullWidth><JoinFullIcon />Create Group</Button>
+              {loading && <CircularProgress size={24} sx={{color: '#fff', position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px'}} />}
+            </Box>
         </Stack>
         <Snackbar
             open={snackOpen}

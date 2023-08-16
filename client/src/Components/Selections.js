@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { UserContext } from '../Context/UserContext';
 import { useTheme } from '@mui/material/styles';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Box from '@mui/material/Box';
@@ -18,23 +19,23 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import axios from 'axios';
 
 
-const Selections = ( { choices, today, setToday, userId } ) => {
+const Selections = ( { choices, today, setToday } ) => {
+    // State
     const theme = useTheme()
+    const { user } = useContext(UserContext)
     const [loading, setLoading] = useState(false)
 
+    // Submit Choices
     const handleSubmit = async (e) => {
         e.preventDefault()
-
         try {
-            const submitted = today.selections.some((selection) => selection.member === userId)
-
+            const submitted = today.selections.some((selection) => selection.member === user.id)
             if(!submitted) {
                 setLoading(true)
                 const token = localStorage.getItem('token')
                 const response = await axios.post(`http://localhost:5000/days/${today._id}`,
-                {"member": userId, "selection": choices },
-                {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}}
-                )
+                {"member": user, "selection": choices },
+                {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
                 setToday(response.data)
                 setLoading(false)
             } else {

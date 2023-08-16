@@ -9,10 +9,12 @@ import Divider from '@mui/material/Divider';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
 const Register = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [snackOpen, setSnackOpen] = useState(false);
     const [alert, setAlert] = useState({severity: 'success', message:''})
     const [formData, setFormData] = useState({
@@ -30,6 +32,7 @@ const Register = () => {
         e.preventDefault()
         try {
             if (formData.password === formData.confirmPassword) {
+                setLoading(true)
                 const response = await axios.post('http://localhost:5000/users', formData, { headers: {'Content-Type': 'application/json'}})
                 if(response.data) localStorage.setItem("token", response.data)
                 navigate('/user/profile')
@@ -95,7 +98,10 @@ const Register = () => {
                         value={formData.confirmPassword}
                         onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                         />
-                    <Button type='submit' variant="contained" endIcon={<AppRegistrationIcon />}>Create Account</Button>
+                    <Box sx={{position: 'relative'}}>
+                        <Button type='submit' variant="contained" endIcon={<AppRegistrationIcon />}>Create Account</Button>
+                        {loading && <CircularProgress size={24} sx={{color: '#fff', position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px'}} />}
+                    </Box>
                 </Box>
             </Box>
             <Snackbar

@@ -1,0 +1,18 @@
+input::file-selector-button {
+    background-color: #f4f7f7;
+    padding: 0.5rem;
+    min-width: 200px;
+    border: 0;
+    margin: auto;
+    color: #1f4e5f;
+    font-family: 'roboto';
+  }
+
+.bounce {
+    animation: bounce 0.4s alternate 60;
+}
+
+@keyframes bounce {
+    from {transform: scale(1);}
+    to {transform: scale(1.1);}
+  }

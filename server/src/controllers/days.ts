@@ -1,11 +1,9 @@
 // Dependencies
-import { Types } from 'mongoose'
 import express from 'express';
 import { Group, Day, User } from '../models';
 import { createSummary } from '../summary';
 import { validateToken } from '../JWT';
 const router = require('express').Router()
-const ObjectId = Types.ObjectId
 
 // GET All Days (By Group)
 router.get('/:id', validateToken, async (req: express.Request, res: express.Response) => {
@@ -42,7 +40,8 @@ router.get('/:id/today', validateToken, async (req: express.Request, res: expres
 
       
       if(!day){
-        const createdDay = await Day.create({group: req.params.id})
+        const foundGroup = await Group.findById(req.params.id)
+        const createdDay = await Day.create({group: foundGroup})
         res.status(200).json(createdDay)
     } else {
         res.status(200).json(day)
@@ -59,7 +58,7 @@ router.post('/:id', validateToken, async (req: express.Request, res: express.Res
     try {
       const today = await Day.findByIdAndUpdate(
           req.params.id,
-          {$addToSet: {'selections': {member: new ObjectId(member), selection: selection}}},
+          {$addToSet: {'selections': {member: member, selection: selection}}},
           {new: true}
         ).populate({
           path: 'group',

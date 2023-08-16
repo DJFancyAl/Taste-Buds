@@ -10,6 +10,7 @@ import Selections from '../Selections';
 import axios from 'axios';
 
 const Today = () => {
+  // State
   const navigate = useNavigate()
   const defaultChoices = [{type:'Placeholder', name: 'Top Selection!'}, {type:'Placeholder', name: 'Second Choice'}, {type:'Placeholder', name: 'Third Option'}]
   const { user } = useContext(UserContext)
@@ -20,6 +21,7 @@ const Today = () => {
   const [choices, setChoices] = useState(defaultChoices)
 
 
+  // Get Today's Data
   const getToday = async () => {
     try {
       const token = localStorage.getItem('token')
@@ -125,10 +127,10 @@ const Today = () => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Grid container spacing={4}>
           <Grid item xs={12} lg={6}>
-            <ItemLists group={today.group} items={items} setItems={setItems} filteredTypes={filteredTypes} setFilteredTypes={setFilteredTypes} filteredList={filteredList} setFilteredList={setFilteredList} />
+            <ItemLists group={today.group} items={items} setItems={setItems} filteredTypes={filteredTypes} setFilteredTypes={setFilteredTypes} filteredList={filteredList ? filteredList : []} setFilteredList={setFilteredList} />
           </Grid>
           <Grid item xs>
-            <Selections choices={choices} today={today} setToday={setToday} userId={user._id} />
+            <Selections choices={choices} today={today} setToday={setToday} />
           </Grid>
         </Grid>
       </DragDropContext>

@@ -12,6 +12,7 @@ import Today from "./Components/Pages/Today";
 import Group from "./Components/Pages/Group";
 import History from "./Components/Pages/History";
 import Profile from "./Components/Pages/Profile";
+import './app.css'
 
 function App() {
   // State

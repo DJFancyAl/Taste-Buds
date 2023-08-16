@@ -15,14 +15,15 @@ import Divider from '@mui/material/Divider';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import JoinFullIcon from '@mui/icons-material/JoinFull';
+import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
 const LinkGroup = ( { userId } ) => {
     // State
     const theme = useTheme()
     const token = localStorage.getItem('token')
-    const [snackOpen, setSnackOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [snackOpen, setSnackOpen] = useState(false);
     const [alert, setAlert] = useState({severity: 'success', message:''})
     const [search, setSearch] = useState('')
     const [waiting, setWaiting] = useState(false)
@@ -32,6 +33,7 @@ const LinkGroup = ( { userId } ) => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
+            setLoading(true)
             const response = await axios.get(`http://localhost:5000/users/search/${search}`,
             { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
 
@@ -47,15 +49,16 @@ const LinkGroup = ( { userId } ) => {
             }
             setSnackOpen(true)
         }
+        setLoading(false)
     }
 
 
     // Handle Join
     const handleJoin = async (budId) => {
         try {
+            setLoading(true)
             const response = await axios.get(`http://localhost:5000/groups/request/${budId}/${userId}`,
             { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
-            
             setWaiting(true)
             setSearch('')
             setBuds([])
@@ -69,6 +72,7 @@ const LinkGroup = ( { userId } ) => {
             }
             setSnackOpen(true)
         }
+        setLoading(false)
     }
 
 
@@ -146,7 +150,10 @@ const LinkGroup = ( { userId } ) => {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         />
-                    <Button type='submit' variant="contained">Find Bud</Button>
+                    <Box sx={{position: 'relative'}}>
+                        <Button type='submit' variant="contained" sx={{height: '100%'}}>Find Bud</Button>
+                        {loading && <CircularProgress size={24} sx={{color: '#fff', position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px'}} />}
+                    </Box>
                 </Stack>
                 {waiting && waitMessage}
                 {buds.length > 0 && budList}

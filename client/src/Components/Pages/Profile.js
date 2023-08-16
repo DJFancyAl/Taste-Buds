@@ -15,6 +15,7 @@ import axios from 'axios';
 
 const Profile = () => {
     const {user, setUser} = useContext(UserContext)
+    const [loading, setLoading] = useState(false);
     const [snackOpen, setSnackOpen] = useState(false);
     const [alert, setAlert] = useState({severity: 'success', message:''})
     const inputDate = new Date(user.date);
@@ -24,8 +25,10 @@ const Profile = () => {
         try {
             const token = localStorage.getItem('token')
             if(token) {
+                setLoading(true)
                 const response = await axios.put(`http://localhost:5000/users/${user._id}`, formData, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
                 setUser(response.data)
+                setLoading(false)
                 setAlert({severity: 'success', message: 'Profile Updated!'})
                 setSnackOpen(true)
             }
@@ -57,7 +60,7 @@ const Profile = () => {
                 </Box>
             </Stack>
             <Divider sx={{my:4}} />
-            <UpdateProfile updateProfile={updateProfile} />
+            <UpdateProfile updateProfile={updateProfile} loading={loading} />
             <Snackbar
                 open={snackOpen}
                 autoHideDuration={4000}
