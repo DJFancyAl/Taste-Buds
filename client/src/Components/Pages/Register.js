@@ -35,7 +35,7 @@ const Register = () => {
                 setLoading(true)
                 const response = await axios.post('http://localhost:5000/users', formData, { headers: {'Content-Type': 'application/json'}})
                 if(response.data) localStorage.setItem("token", response.data)
-                navigate('/user/profile')
+                navigate('/user/profile?new=true')
             } else {
                 setAlert({severity: 'error', message: `Passwords don't match...`})
                 setSnackOpen(true)

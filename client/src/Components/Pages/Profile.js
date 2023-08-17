@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react'
 import { UserContext } from '../../Context/UserContext'
+import { useSearchParams } from 'react-router-dom';
 import { format } from 'date-fns'
 import UpdateProfile from '../UpdateProfile';
 import Box from '@mui/material/Box';
@@ -15,6 +16,7 @@ import axios from 'axios';
 
 const Profile = () => {
     const {user, setUser} = useContext(UserContext)
+    const [searchParams] = useSearchParams();
     const [loading, setLoading] = useState(false);
     const [snackOpen, setSnackOpen] = useState(false);
     const [alert, setAlert] = useState({severity: 'success', message:''})
@@ -60,7 +62,7 @@ const Profile = () => {
                 </Box>
             </Stack>
             <Divider sx={{my:4}} />
-            <UpdateProfile updateProfile={updateProfile} loading={loading} />
+            <UpdateProfile updateProfile={updateProfile} loading={loading} newUser={searchParams.get('new')} setAlert={setAlert} setSnackOpen={setSnackOpen} />
             <Snackbar
                 open={snackOpen}
                 autoHideDuration={4000}

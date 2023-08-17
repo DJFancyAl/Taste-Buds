@@ -18,7 +18,7 @@ import JoinFullIcon from '@mui/icons-material/JoinFull';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
-const LinkGroup = ( { userId } ) => {
+const LinkGroup = ( { userId, newUser } ) => {
     // State
     const theme = useTheme()
     const token = localStorage.getItem('token')
@@ -126,6 +126,7 @@ const LinkGroup = ( { userId } ) => {
     return (
         <Box sx={{textAlign: 'center'}}>
             <Typography variant="h5" gutterBottom>Okay. It's time for you to connect with your Bud(s)! You can start by searching for a bud to join their group OR create a new group and invite your bud to join!</Typography>
+            {newUser && <Typography sx={{backgroundColor: theme.palette.secondary.dark, color: theme.palette.primary.main, p: 2}} variant='subtitle1'>You'll need at least one other group member to choose your meals. Once you have a group - return to today's page.</Typography>}
             <Divider sx={{mt: 5}}>FIND YOUR BUD</Divider>
             <Box
                 component="form"

@@ -1,6 +1,6 @@
 // Dependencies
 import express from 'express';
-import { User } from '../models';
+import { User, Group } from '../models';
 import bcrypt from 'bcrypt';
 import { createToken, validateToken } from '../JWT';
 const router = require('express').Router()
@@ -146,7 +146,14 @@ router.put('/:id', validateToken, async (req: express.Request, res: express.Resp
 // Delete User
 router.delete('/:id', validateToken, async (req: express.Request, res: express.Response) => {
     try {
-        const deletedUser = await User.findByIdAndDelete(req.params.id)
+        const foundUser = await User.findById(req.params.id).select('group').populate('group')
+
+        // Remove User from Group if Necessary
+        if(foundUser.group) {
+            const foundGroup = await Group.findByIdAndUpdate(foundUser.group._id, {$pull: {members: {_id: foundUser._id}}})}
+
+        // Delete the User
+        await foundUser.deleteOne();
         res.status(200).json("User deleted!")
     } catch (err) {
         res.status(400).json({error: "Sorry - user not deleted."})

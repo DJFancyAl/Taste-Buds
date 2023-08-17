@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 import { UserContext } from '../Context/UserContext';
 import Box from '@mui/material/Box';
@@ -8,14 +9,17 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import FileBase64 from 'react-file-base64';
 import CircularProgress from '@mui/material/CircularProgress';
+import axios from 'axios';
 
 
-const UpdateProfile = ( { updateProfile, loading }) => {
+const UpdateProfile = ( { updateProfile, loading, newUser}) => {
     // State
     const theme = useTheme()
+    const navigate = useNavigate()
     const {user} = useContext(UserContext)
+    const [deleting, setDeleting] = useState(false)
     const [formData, setFormData] = useState({username: '', name: '', bio: '', image: null});
-    const [file, setFile] = useState(null);
+    const [file] = useState(null);
 
     // Update User Profile
     const handleSubmit = async (e) => {
@@ -23,11 +27,26 @@ const UpdateProfile = ( { updateProfile, loading }) => {
         updateProfile(formData)
     }
 
+    // Delete User
+    const deleteUser = async () => {
+        try {
+            const token = localStorage.getItem('token')
+            if(token) {
+                setDeleting(true)
+                const response = await axios.delete(`http://localhost:5000/users/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+                localStorage.removeItem('token')
+                navigate('/')
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
 
     // Sets form data to existing user
     useEffect(() => {
         setFormData(user)
-    }, [])
+    }, [user])
 
     return (
         <Box
@@ -45,6 +64,12 @@ const UpdateProfile = ( { updateProfile, loading }) => {
             }}
         >
             <Typography variant="h4" gutterBottom>Update Profile</Typography>
+            {newUser && (
+                <Typography variant="subtitle2" sx={{backgroundColor: theme.palette.secondary.dark, color: theme.palette.primary.main, p: 2}}>WELCOME! First let's update your profile! Once you're done - you'll need to join a group. <Link to="/user/group?new=true" style={{
+                    fontWeight: 'bold',
+                    color: theme.palette.primary.dark
+                  }}>Click here to procede to the group page.</Link></Typography>
+            )}
             <TextField
                 type='text'
                 fullWidth
@@ -85,6 +110,10 @@ const UpdateProfile = ( { updateProfile, loading }) => {
             <Box sx={{position: 'relative'}}>
                 <Button type='submit' variant="contained" fullWidth>Update User</Button>
                 {loading && <CircularProgress size={24} sx={{color: '#fff', position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px'}} />}
+            </Box>
+            <Box sx={{position: 'relative'}}>
+            <Button variant="contained" fullWidth sx={{bgcolor: 'darkred', color: theme.palette.background.light, "&:hover": {backgroundColor: '#B50000'}}} onClick={deleteUser}>Delete User</Button>
+                {deleting && <CircularProgress size={24} sx={{color: '#fff', position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px'}} />}
             </Box>
             <img src={file} />
         </Box>
