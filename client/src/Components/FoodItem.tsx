@@ -10,24 +10,34 @@ import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const FoodItem = ( { id, item, deleteItem }) => {
-  const theme = useTheme()
+
+interface FoodItem {
+  name: String
+  type: String
+}
+
+interface FoodItemProps {
+  id: number
+  item: FoodItem
+  deleteItem: (item: FoodItem) => {}
+}
+
+function FoodItem({ id, item, deleteItem }: FoodItemProps) {
+  const theme = useTheme();
 
   return (
     <Draggable draggableId={String(id)} index={id}>
       {(provided) => (
         <>
           <ListItem {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
-            secondaryAction={
-              <IconButton edge="end" aria-label="delete" sx={{color: theme.palette.primary.dark}} onClick={() => deleteItem(item)}>
-                <DeleteIcon />
-              </IconButton>
-            }
+            secondaryAction={<IconButton edge="end" aria-label="delete" sx={{ color: theme.palette.primary.dark }} onClick={() => deleteItem(item)}>
+              <DeleteIcon />
+            </IconButton>}
           >
             <ListItemIcon>
-                {item.type === 'Takeout' && <FastfoodIcon />}
-                {item.type === 'Eat In' && <DinnerDiningIcon />}
-                {item.type === 'Dine Out' && <LocalDiningIcon />}
+              {item.type === 'Takeout' && <FastfoodIcon />}
+              {item.type === 'Eat In' && <DinnerDiningIcon />}
+              {item.type === 'Dine Out' && <LocalDiningIcon />}
             </ListItemIcon>
             <ListItemText primary={item.name} />
           </ListItem>
@@ -35,7 +45,7 @@ const FoodItem = ( { id, item, deleteItem }) => {
         </>
       )}
     </Draggable>
-  )
+  );
 }
 
 export default FoodItem

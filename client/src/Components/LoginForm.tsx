@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { FormEvent, SyntheticEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import LoginIcon from '@mui/icons-material/Login';
 import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const LoginForm = () => {
     //State
@@ -18,18 +18,22 @@ const LoginForm = () => {
     const [formData, setFormData] = useState({username: '', password: ''})
 
     // Login Submit
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setLoading(true)
         try {
             const response = await axios.post(`http://localhost:5000/users/login`, formData, { headers: {'Content-Type': 'application/json'}})
             if(response.data) localStorage.setItem("token", response.data)
             navigate('/user/today')
-        } catch(err) {
-            if (err.response) {
+        } catch (err) {
+            if (err instanceof AxiosError) {
+              if (err.response) {
                 setAlert({severity: 'error', message: err.response.data.error})
+              } else {
+                setAlert({severity: 'error', message: 'Sorry - unable to login.'})
+              }
             } else {
-                setAlert({severity: 'error', message: 'Login Failed...'})
+                setAlert({severity: 'error', message: 'Sorry - unable to login.'})
             }
             setSnackOpen(true)
         }
@@ -37,7 +41,7 @@ const LoginForm = () => {
     }
 
     // Handle Snackbar Close
-    const handleClose = (e, reason) => {
+    const handleClose = (e: Event | SyntheticEvent, reason: string) => {
         if (reason === 'clickaway') return;    
         setSnackOpen(false);
     };
@@ -75,9 +79,13 @@ const LoginForm = () => {
                 open={snackOpen}
                 autoHideDuration={4000}
                 onClose={handleClose}
-            ><Alert variant="filled" severity={alert.severity}>{alert.message}</Alert></Snackbar>
+            ><Alert variant="filled" severity={alert.severity as AlertColor}>{alert.message}</Alert></Snackbar>
         </Box>
     )
 }
 
 export default LoginForm
+
+function setSnackOpen(arg0: boolean) {
+    throw new Error('Function not implemented.');
+}

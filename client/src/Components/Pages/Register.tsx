@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, SyntheticEvent, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
@@ -7,12 +7,13 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 const Register = () => {
+    // State
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [snackOpen, setSnackOpen] = useState(false);
@@ -23,12 +24,14 @@ const Register = () => {
         confirmPassword: "",
     });
     
-    const handleClose = (e, reason) => {
+    // Handle Snackbar Close
+    const handleClose = (e: Event | SyntheticEvent, reason: string) => {
         if (reason === 'clickaway') return;    
         setSnackOpen(false);
     };
     
-    const handleSubmit = async (e) => {
+    // Handle Submit Registration
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         try {
             if (formData.password === formData.confirmPassword) {
@@ -41,12 +44,15 @@ const Register = () => {
                 setSnackOpen(true)
             }
         } catch (err) {
-            if (err.response) {
+            if (err instanceof AxiosError) {
+              if (err.response) {
                 setAlert({severity: 'error', message: err.response.data.error})
+              } else {
+                setAlert({severity: 'error', message: String(err)})
+              }
             } else {
-                setAlert({severity: 'error', message: 'Login Failed...'})
+              console.log(err)
             }
-            setSnackOpen(true)
         }
     }
 
@@ -108,7 +114,7 @@ const Register = () => {
                 open={snackOpen}
                 autoHideDuration={4000}
                 onClose={handleClose}
-            ><Alert variant="filled" severity={alert.severity}>{alert.message}</Alert></Snackbar>
+            ><Alert variant="filled" severity={alert.severity as AlertColor}>{alert.message}</Alert></Snackbar>
         </Container>
     )
 }

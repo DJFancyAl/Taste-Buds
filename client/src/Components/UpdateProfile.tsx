@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, FormEvent } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
@@ -10,14 +10,28 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
+interface User {
+    _id: String
+    username: String
+    name: String
+    bio: String
+    pic: String
+}
 
-const UpdateProfile = ( { updateProfile, loading, newUser}) => {
+interface UpdateProfileProps {
+    updateProfile: (user: User) => {}
+    loading: Boolean
+    newUser: Boolean
+}
+
+
+const UpdateProfile = ( { updateProfile, loading, newUser}: UpdateProfileProps) => {
     // State
     const theme = useTheme()
     const navigate = useNavigate()
     const {user} = useContext(UserContext)
     const [deleting, setDeleting] = useState(false)
-    const [formData, setFormData] = useState({username: '', name: '', bio: '', pic: null});
+    const [formData, setFormData] = useState({_id: '', username: '', name: '', bio: '', pic: ''});
     const [file] = useState(null);
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         onDrop: (acceptedFiles) => {
@@ -25,14 +39,14 @@ const UpdateProfile = ( { updateProfile, loading, newUser}) => {
           const reader = new FileReader();
           reader.readAsDataURL(acceptedFiles[0]);
           reader.onload = () => {
-            setFormData({...formData, pic: reader.result});
+            setFormData({...formData, pic: String(reader.result)});
           };
         },
       });
       
 
     // Update User Profile
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         updateProfile(formData)
     }
@@ -40,7 +54,7 @@ const UpdateProfile = ( { updateProfile, loading, newUser}) => {
     // For Photo Upload
     const photo = acceptedFiles.map(file => (
         <Box>
-          {file.path} - {file.size} bytes
+          {file.name} - {file.size} bytes
         </Box>
     ));
 
@@ -48,11 +62,13 @@ const UpdateProfile = ( { updateProfile, loading, newUser}) => {
     const deleteUser = async () => {
         try {
             const token = localStorage.getItem('token')
-            if(token) {
-                setDeleting(true)
-                const response = await axios.delete(`http://localhost:5000/users/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
-                localStorage.removeItem('token')
-                navigate('/')
+            if(token && user) {
+                if(user._id) {
+                    setDeleting(true)
+                    const response = await axios.delete(`http://localhost:5000/users/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+                    localStorage.removeItem('token')
+                    navigate('/')
+                }
             }
         } catch (e) {
             console.log(e)
@@ -61,7 +77,7 @@ const UpdateProfile = ( { updateProfile, loading, newUser}) => {
 
     // Sets form data to existing user
     useEffect(() => {
-        setFormData(user)
+        setFormData(user || {_id: '', username: '', name: '', bio: '', pic: ''})
     }, [user])
 
     return (
@@ -117,10 +133,10 @@ const UpdateProfile = ( { updateProfile, loading, newUser}) => {
                 onChange={(e) => setFormData({...formData, bio: e.target.value})}
                 />
             
-            <Box sx={{bgcolor: theme.palette.primary.main, color: theme.palette.background.light, p:1}}>
+            <Box sx={{bgcolor: theme.palette.primary.main, color: theme.palette.info.main, p:1}}>
             <div {...getRootProps({className: 'dropzone'})}>
                 <input type="file" accept="image/*" {...getInputProps()} />
-                <Typography variant="subtitle">Drag 'n' drop an image here, or click to select a file</Typography>
+                <Typography variant="subtitle1">Drag 'n' drop an image here, or click to select a file</Typography>
                 <Typography variant="caption">{photo}</Typography>
             </div>
             </Box>
@@ -130,10 +146,10 @@ const UpdateProfile = ( { updateProfile, loading, newUser}) => {
                 {loading && <CircularProgress size={24} sx={{color: '#fff', position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px'}} />}
             </Box>
             <Box sx={{position: 'relative'}}>
-            <Button variant="contained" fullWidth sx={{bgcolor: 'darkred', color: theme.palette.background.light, "&:hover": {backgroundColor: '#B50000'}}} onClick={deleteUser}>Delete User</Button>
+            <Button variant="contained" fullWidth sx={{bgcolor: 'darkred', color: theme.palette.info.main, "&:hover": {backgroundColor: '#B50000'}}} onClick={deleteUser}>Delete User</Button>
                 {deleting && <CircularProgress size={24} sx={{color: '#fff', position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px'}} />}
             </Box>
-            <img src={file} />
+            <img src={String(file)} style={{display: 'none'}} />
         </Box>
     )
 }

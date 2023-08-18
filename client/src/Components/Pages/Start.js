@@ -15,7 +15,7 @@ const Start = () => {
     if(localStorage.getItem('token')){
       navigate('/user')
     }
-  }, [])
+  }, [navigate])
 
 
   return (

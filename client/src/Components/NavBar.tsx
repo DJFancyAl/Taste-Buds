@@ -15,7 +15,14 @@ import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LogoutIcon from '@mui/icons-material/Logout';
 
-const NavBar = ( { open, toggleDrawer, logout}) => {
+
+interface NavBarProps {
+    open: boolean
+    toggleDrawer: () => {}
+    logout: () => {}
+}
+
+const NavBar = ( { open, toggleDrawer, logout}: NavBarProps) => {
     const theme = useTheme()
 
     return (
@@ -26,7 +33,7 @@ const NavBar = ( { open, toggleDrawer, logout}) => {
         >
             <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer} onKeyDown={toggleDrawer} >
                 <List component="nav" aria-label="NavBar Items" subheader={<ListSubheader sx={{textAlign: 'center'}}>Menu</ListSubheader>}>  
-                    <Link to="/user/today" style={{ textDecoration: 'none', color: theme.palette.background.light }}>
+                    <Link to="/user/today" style={{ textDecoration: 'none', color: theme.palette.info.main }}>
                         <ListItem disablePadding>
                             <ListItemButton>
                                 <ListItemIcon><TodayIcon /></ListItemIcon>
@@ -35,7 +42,7 @@ const NavBar = ( { open, toggleDrawer, logout}) => {
                         </ListItem>
                     </Link>
                     <Divider />
-                    <Link to="/user/group" style={{ textDecoration: 'none', color: theme.palette.background.light }}>
+                    <Link to="/user/group" style={{ textDecoration: 'none', color: theme.palette.info.main }}>
                         <ListItem disablePadding>
                             <ListItemButton>
                                 <ListItemIcon><PeopleIcon /></ListItemIcon>
@@ -44,7 +51,7 @@ const NavBar = ( { open, toggleDrawer, logout}) => {
                         </ListItem>
                     </Link>
                     <Divider />
-                    <Link to="/user/history" style={{ textDecoration: 'none', color: theme.palette.background.light }}>
+                    <Link to="/user/history" style={{ textDecoration: 'none', color: theme.palette.info.main }}>
                         <ListItem disablePadding>
                             <ListItemButton>
                                 <ListItemIcon><HistoryEduIcon /></ListItemIcon>
@@ -53,7 +60,7 @@ const NavBar = ( { open, toggleDrawer, logout}) => {
                         </ListItem>
                     </Link>
                     <Divider />
-                    <Link to="/user/profile" style={{ textDecoration: 'none', color: theme.palette.background.light }}>
+                    <Link to="/user/profile" style={{ textDecoration: 'none', color: theme.palette.info.main }}>
                         <ListItem disablePadding>
                             <ListItemButton>
                                 <ListItemIcon><AccountBoxIcon /></ListItemIcon>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FormEvent, SyntheticEvent, useState } from 'react';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -8,21 +8,32 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import JoinFullIcon from '@mui/icons-material/JoinFull';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
-const CreateGroup = ( { userId, setUser } ) => {
+interface User {
+  _id: number
+  name: string
+  username: string
+}
+
+interface CreateGroupProps {
+  userId: number
+  setUser: (user: User) => {}
+}
+
+const CreateGroup = ( { userId, setUser }: CreateGroupProps ) => {
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState('')
   const [description, setDescription] = useState('')
   const [snackOpen, setSnackOpen] = useState(false);
-  const [alert, setAlert] = useState({severity: 'success', message:''})
+  const [alert] = useState({severity: 'success', message:''})
 
 
   // Create New Group
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     try {
@@ -42,7 +53,7 @@ const CreateGroup = ( { userId, setUser } ) => {
   }
 
   // Handle Snackbar Close
-  const handleClose = (e, reason) => {
+  const handleClose = (e: Event | SyntheticEvent, reason: string) => {
     if (reason === 'clickaway') return;    
     setSnackOpen(false);
   };
@@ -96,7 +107,7 @@ const CreateGroup = ( { userId, setUser } ) => {
             open={snackOpen}
             autoHideDuration={4000}
             onClose={handleClose}
-        ><Alert variant="filled" severity={alert.severity}>{alert.message}</Alert></Snackbar>
+        ><Alert variant="filled" severity={alert.severity as AlertColor}>{alert.message}</Alert></Snackbar>
       </Box>
     </Box>
   )

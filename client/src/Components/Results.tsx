@@ -19,7 +19,40 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import axios from 'axios';
 
-const Results = ( { today, setToday }) => {
+
+interface Member {
+    _id: String
+    name: String
+    username: String
+    pic: String
+}
+
+interface Selection {
+    member: Member
+    name: String
+    type: String
+}
+
+interface Today {
+    _id: String
+    selections: [Selection]
+    group: {members: [Member]}
+    summary: {
+        top_choice: String
+        second_choice: String
+        explanation: String
+    }
+}
+
+interface ResultsProps {
+    today: Today
+    setToday: (day: Today) => {
+
+    }
+}
+
+
+const Results = ( { today, setToday }: ResultsProps) => {
     const { user } = useContext(UserContext)
     const theme = useTheme()
     const userSelection = today.selections.find(selection => selection.member._id === user._id)
@@ -98,7 +131,7 @@ const Results = ( { today, setToday }) => {
                 subheader={
                     <ListSubheader component="div" id="nested-list-subheader">Your Selections for Today</ListSubheader>
                 }>
-                {userSelection.selection.map((item, index) => {
+                {userSelection.selection.map((item: Selection, index: Number) => {
                     return (
                         <ListItem key={index}>
                                 <ListItemIcon>
@@ -111,7 +144,7 @@ const Results = ( { today, setToday }) => {
                     )
                 })}
             </List>
-            <Button variant='contained' sx={{bgcolor: 'darkred', color: theme.palette.background.light, "&:hover": {backgroundColor: '#B50000'}}} onClick={deleteSelections}><RestartAltIcon />Reset Choices</Button>
+            <Button variant='contained' sx={{bgcolor: 'darkred', color: theme.palette.info.main, "&:hover": {backgroundColor: '#B50000'}}} onClick={deleteSelections}><RestartAltIcon />Reset Choices</Button>
         </Box>
     )
 

@@ -5,7 +5,7 @@ import { DarkTheme } from './Themes/DarkTheme';
 import { ThemeProvider } from "@mui/material";
 import { ThemeContext } from "./Context/ThemeContext";
 import Paper from '@mui/material/Paper';
-import Start from "./Components/Pages/Start";
+import Start from './Components/Pages/Start'
 import Register from "./Components/Pages/Register";
 import User from "./Components/Pages/User";
 import Today from "./Components/Pages/Today";
