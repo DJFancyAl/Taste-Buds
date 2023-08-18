@@ -1,4 +1,4 @@
-import { useState, useContext, MouseEventHandler } from 'react';
+import { useState, useContext } from 'react';
 import { UserContext } from '../Context/UserContext';
 import { useTheme } from '@mui/material/styles';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
@@ -20,21 +20,22 @@ import axios from 'axios';
 
 
 interface Member {
-    _id: String
-    name: String
-    username: String
-    pic: String
+    _id: string
+    username: string
+    name: string
+    bio: string
+    pic: string
 }
 
 interface Selection {
     member: Member
-    selection: [{name: String, type: String}]
+    selection: {name: String, type: String}[]
 }
 
 interface Today {
     _id: String
-    selections: [Selection]
-    group: {members: [Member]}
+    selections: Selection[]
+    group: {members: Member[]}
     summary: {
         top_choice: String
         second_choice: String
@@ -43,7 +44,7 @@ interface Today {
 }
 
 interface SelectionsProps {
-    choices: [{name: String, type: String}]
+    choices: {name: String, type: String}[]
     today: Today
     setToday: (data: Today) => {}
 }
@@ -77,7 +78,7 @@ const Selections = ( { choices, today, setToday }: SelectionsProps ) => {
 
     return (
         <Box sx={{height: '100%', display: 'flex', flexDirection: 'column'}}>
-            <Box sx={{height: '150px', textAlign:'center'}}>
+            <Box sx={{minHeight: '150px', textAlign:'center', mb: 2}}>
                 <Typography variant='h6'>Today's Choices</Typography>
                 <Typography variant='subtitle2'>Select your top 3 meal choices by dragging & dropping items on the left.</Typography>
                 <Typography variant='body2'>Once all members of your group have submitted their choices, you will be able to view the results on this page! Will there be a match? We'll try to make it easy by giving you helpful insights.</Typography>

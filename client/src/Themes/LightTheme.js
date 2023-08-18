@@ -27,13 +27,13 @@ export const LightTheme = createTheme({
       color: '#367287', // Set the font color to white
     },
     h2: {
-      color: '#f4f7f7', // Set the font color to white
+      color: '#367287', // Set the font color to white
     },
     h3: {
-      color: '#a2fd01', // Set the font color to white
+      color: '#b3ec4e', // Set the font color to white
     },
     h4: {
-      color: '#f4f7f7', // Set the font color to white
+      color: '#367287', // Set the font color to white
     },
     h5: {
       color: '#a2fd01' // Set the font color to white
@@ -42,10 +42,10 @@ export const LightTheme = createTheme({
       color: '#f4f7f7', // Set the font color to white
     },
     subtitle1: {
-      color: '#f4f7f7'
+      color: '#367287'
     },
     subtitle2: {
-      color: '#a2fd01'
+      color: '#b3ec4e'
     },
     body2: {
       color: '#f4f7f7'
@@ -71,7 +71,7 @@ export const LightTheme = createTheme({
     MuiDivider: {
       styleOverrides: {
         root: {
-          color: '#f4f7f7',
+          color: '#367287',
           borderColor: 'rgba(54, 114, 135, 0.6)',
           '&::before, ::after': {
             borderColor: 'rgba(54, 114, 135, 0.6)',

@@ -59,8 +59,8 @@ const LoginForm = () => {
             flexDirection: 'column',
             gap: '20px'}}
         >
-            <TextField fullWidth id="username" label="Username" variant="filled" type='text' value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} />
-            <TextField fullWidth id="password" label="Password" variant="filled" type='password' value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} />
+            <TextField id="username" label="Username" variant="filled" type='text' value={formData.username} onChange={(e) => setFormData({...formData, username: e.target.value})} />
+            <TextField id="password" label="Password" variant="filled" type='password' value={formData.password} onChange={(e) => setFormData({...formData, password: e.target.value})} />
             <Box sx={{position: 'relative'}}>
                 <Button type='submit' variant="contained" endIcon={<LoginIcon />}>Login</Button>
                 {loading && <CircularProgress

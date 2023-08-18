@@ -13,15 +13,32 @@ import JoinFullIcon from '@mui/icons-material/JoinFull';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
-interface User {
-  _id: number
-  name: string
+interface Member {
+  _id: string
   username: string
+  name: string
+  bio: string
+  pic: string
+}
+
+interface User {
+  _id: string
+  username: string
+  name: string
+  bio: string
+  pic: string
+  group: {
+      _id: string
+      description: string
+      type: string
+      requests: Number[]
+      members: Member[]
+  }
 }
 
 interface CreateGroupProps {
-  userId: number
-  setUser: (user: User) => {}
+  userId: string
+  setUser: (user: User) => void
 }
 
 const CreateGroup = ( { userId, setUser }: CreateGroupProps ) => {

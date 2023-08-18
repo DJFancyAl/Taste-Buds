@@ -24,7 +24,7 @@ export const DarkTheme = createTheme({
     fontFamily: 'Roboto, sans-serif', // Set your preferred font family
     fontSize: 16, // Set your base font size
     h1: {
-      color: '#a2fd01', // Set the font color to white
+      color: '#a2fd01' // Set the font color to white
     },
     h2: {
       color: '#f4f7f7', // Set the font color to white

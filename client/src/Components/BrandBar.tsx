@@ -108,17 +108,17 @@ const BrandBar = () => {
               </IconButton>
               <Box sx={{ flexGrow: 1}}>
                 <Link to='/user'>
-                  <img src="/logo.png" alt="Taste Buds Logo" height={40} />
+                  <img src="/logo.png" alt="Taste Buds Logo" style={{maxHeight: '40px', maxWidth: '100%'}} />
                 </Link>
               </Box>
               <Link to='/user/group'>
-                <IconButton>
+                <IconButton sx={{ display: { xs: 'none', md: 'inherit' } }}>
                   <Badge badgeContent={requests} color="secondary">
                     <Avatar variant='rounded' alt={user.username} src={user.pic} />
                   </Badge>
                 </IconButton>
               </Link>
-              <FormControlLabel label='' onClick={handleSwitch} control={<MaterialUISwitch sx={{ ml:4, my: 1 }} defaultChecked />} />
+              <FormControlLabel label='' onClick={handleSwitch} control={<MaterialUISwitch sx={{ ml:4, my: 1, display: { xs: 'none', md: 'inherit' } }} defaultChecked />} />
               </Toolbar>
           </AppBar>
           <NavBar open={open} toggleDrawer={toggleDrawer} logout={logout} />

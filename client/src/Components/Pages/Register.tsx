@@ -59,7 +59,7 @@ const Register = () => {
 
     return (
         <Container sx={{minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', py: 5}}>
-            <Box>
+            <Box sx={{p: 2, width: '100%', m: 'auto'}}>
                 <Typography variant="h2" gutterBottom>Time to Set Up an Account.</Typography>
                 <Typography variant="subtitle2" gutterBottom sx={{mb:5}}>
                     First create a username and password. Then we'll find your Buds!

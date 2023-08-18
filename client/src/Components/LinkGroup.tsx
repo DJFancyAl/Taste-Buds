@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { FormEvent, SyntheticEvent, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
@@ -13,12 +13,39 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import JoinFullIcon from '@mui/icons-material/JoinFull';
 import CircularProgress from '@mui/material/CircularProgress';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
-const LinkGroup = ( { userId, newUser } ) => {
+interface Member {
+    _id: string
+    username: string
+    name: string
+    bio: string
+    pic: string
+}
+
+interface User {
+    _id: string
+    name: string
+    username: string
+    bio: string
+    pic: string
+    group: {
+      _id: string
+      members: Member[]
+      requests: Number[]
+    }
+  }
+
+
+interface LinkGroupProps {
+    userId: String,
+    newUser: String | null
+}
+
+const LinkGroup = ( { userId, newUser }: LinkGroupProps ) => {
     // State
     const theme = useTheme()
     const token = localStorage.getItem('token')
@@ -30,7 +57,7 @@ const LinkGroup = ( { userId, newUser } ) => {
     const [buds, setBuds] = useState([])
 
     // Search Users
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         try {
             setLoading(true)
@@ -42,11 +69,15 @@ const LinkGroup = ( { userId, newUser } ) => {
             setSnackOpen(true)
         } catch(err) {
             setBuds([])
-            if (err.response) {
-                setAlert({severity: 'error', message: err.response.data.error})
-            } else {
-                setAlert({severity: 'error', message: 'Search Failed...'})
-            }
+            if (err instanceof AxiosError) {
+                if (err.response) {
+                  setAlert({severity: 'error', message: err.response.data.error})
+                } else {
+                  setAlert({severity: 'error', message: 'Sorry - unable to search users.'})
+                }
+              } else {
+                  setAlert({severity: 'error', message: 'Sorry - unable to search users.'})
+              }
             setSnackOpen(true)
         }
         setLoading(false)
@@ -54,7 +85,7 @@ const LinkGroup = ( { userId, newUser } ) => {
 
 
     // Handle Join
-    const handleJoin = async (budId) => {
+    const handleJoin = async (budId: String) => {
         try {
             setLoading(true)
             const response = await axios.get(`http://localhost:5000/groups/request/${budId}/${userId}`,
@@ -65,11 +96,15 @@ const LinkGroup = ( { userId, newUser } ) => {
             setAlert({severity: 'success', message: 'Request sent!'})
             setSnackOpen(true)
         } catch(err) {
-            if (err.response) {
-                setAlert({severity: 'error', message: err.response.data.error})
-            } else {
-                setAlert({severity: 'error', message: 'Join Failed...'})
-            }
+            if (err instanceof AxiosError) {
+                if (err.response) {
+                  setAlert({severity: 'error', message: err.response.data.error})
+                } else {
+                  setAlert({severity: 'error', message: 'Sorry - unable to join user.'})
+                }
+              } else {
+                  setAlert({severity: 'error', message: 'Sorry - unable to join user.'})
+              }
             setSnackOpen(true)
         }
         setLoading(false)
@@ -77,7 +112,7 @@ const LinkGroup = ( { userId, newUser } ) => {
 
 
     // Handle Snackbar Close
-    const handleClose = (e, reason) => {
+    const handleClose = (e: Event | SyntheticEvent, reason: string) => {
         if (reason === 'clickaway') return;    
         setSnackOpen(false);
     };
@@ -88,12 +123,12 @@ const LinkGroup = ( { userId, newUser } ) => {
         <>
         <Typography variant="h5" gutterBottom>Found User(s)</Typography>
         <List sx={{bgcolor: theme.palette.primary.main, color: theme.palette.secondary.main, width: '450px', mx: 'auto'}}>
-            {buds.map((bud) => {
+            {buds.map((bud: User) => {
                 return (
                         <ListItem
                         key={bud._id}
                         secondaryAction={
-                            <ListItemButton edge="end" aria-label="comments" onClick={() => handleJoin(bud._id)}>
+                            <ListItemButton aria-label="comments" onClick={() => handleJoin(bud._id)}>
                                 <Stack direction='column' sx={{textAlign: 'center'}}>
                                 <JoinFullIcon fontSize='large' />
                                     Join
@@ -106,7 +141,7 @@ const LinkGroup = ( { userId, newUser } ) => {
                             alt={bud.name}
                             />
                         </ListItemAvatar>
-                        <ListItemText primary={bud.name} secondary={bud.username} secondaryTypographyProps={{color: theme.palette.background.light}}/>
+                        <ListItemText primary={bud.name} secondary={bud.username} secondaryTypographyProps={{color: theme.palette.info.main}}/>
                         </ListItem>
                 )
             })}
@@ -162,7 +197,7 @@ const LinkGroup = ( { userId, newUser } ) => {
                     open={snackOpen}
                     autoHideDuration={4000}
                     onClose={handleClose}
-                ><Alert variant="filled" severity={alert.severity}>{alert.message}</Alert></Snackbar>
+                ><Alert variant="filled" severity={alert.severity as AlertColor}>{alert.message}</Alert></Snackbar>
             </Box>
         </Box>
     )

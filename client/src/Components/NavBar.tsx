@@ -52,15 +52,6 @@ const NavBar = ( { open, toggleDrawer, logout}: NavBarProps) => {
                         </ListItem>
                     </Link>
                     <Divider />
-                    <Link to="/user/history" style={{ textDecoration: 'none', color: theme.palette.info.main }}>
-                        <ListItem disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon><HistoryEduIcon /></ListItemIcon>
-                                <ListItemText primary='History' />
-                            </ListItemButton>
-                        </ListItem>
-                    </Link>
-                    <Divider />
                     <Link to="/user/profile" style={{ textDecoration: 'none', color: theme.palette.info.main }}>
                         <ListItem disablePadding>
                             <ListItemButton>

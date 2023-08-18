@@ -26,7 +26,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import axios from 'axios';
 
 interface Member {
-  _id: String
+  _id: string
   username: string
   name: string
   bio: string
@@ -35,11 +35,11 @@ interface Member {
 
 interface GroupProps {
   group: {
-    _id: String
-    description: String
-    type: String
-    members: [Member]
-    requests: [Number]
+    _id: string
+    description: string
+    type: string
+    members: Member[]
+    requests: Number[]
   }
 }
 

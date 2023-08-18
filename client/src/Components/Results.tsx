@@ -21,21 +21,22 @@ import axios from 'axios';
 
 
 interface Member {
-    _id: String
-    name: String
-    username: String
-    pic: String
+    _id: string
+    username: string
+    name: string
+    bio: string
+    pic: string
 }
 
 interface Selection {
     member: Member
-    selection: [{name: String, type: String}]
+    selection: {name: String, type: String}[]
 }
 
 interface Today {
     _id: String
-    selections: [Selection]
-    group: {members: [Member]}
+    selections: Selection[]
+    group: {members: Member[]}
     summary: {
         top_choice: String
         second_choice: String

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { FormEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Droppable } from 'react-beautiful-dnd';
 import Box from '@mui/material/Box';
@@ -12,14 +12,33 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import FastfoodIcon from '@mui/icons-material/Fastfood';
 import axios from 'axios';
 
 
-const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, filteredList, setFilteredList }) => {
+interface Item {
+    name: String
+    type: String
+}
+
+interface ItemListsProps {
+    group: {
+        _id: string
+        items: Item[]
+    }
+    items: Item[]
+    setItems: (items: Item[]) => {}
+    filteredTypes: String[]
+    setFilteredTypes: (items: String[]) => {}
+    filteredList: Item[]
+    setFilteredList: (items: Item[]) => {}
+}
+
+
+const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, filteredList, setFilteredList }: ItemListsProps) => {
     // State
     const theme = useTheme()
     const token = localStorage.getItem('token')
@@ -28,9 +47,8 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
     const [snackOpen, setSnackOpen] = useState(false);
     const [alert, setAlert] = useState({severity: 'success', message:''})
     
-    
     // Delete List Item
-    const deleteItem = async (item) => {
+    const deleteItem = async (item: Item) => {
         setFilteredList(filteredList.filter(option => option !== item))
         setItems(items.filter(option => option !== item))
         try {
@@ -46,26 +64,27 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
 
 
     // Toggle Filters
-    const toggleFilters = (e) => {
-        const type = e.target.value
+    const toggleFilters = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const type = (e.target as HTMLInputElement).value
+
         if (filteredTypes.includes(type)) {
-            setFilteredTypes(filteredTypes.filter((x) => x !== type))
+          setFilteredTypes(filteredTypes.filter((x) => x !== type))
         } else {
-            setFilteredTypes([...filteredTypes, type])
+          setFilteredTypes([...filteredTypes, type])
         }
     }
     
     
     // Add Item
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         
         try {
             const response  = await axios.post(`http://localhost:5000/groups/${group._id}/items`,
             {'name': itemName, 'type': itemType},
             { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
-
-            setItems([response.data, ...items])
+            const newItem: Item = response.data
+            setItems([newItem, ...items])
             setItemName('')
             setItemType('')
         } catch(err) {
@@ -75,7 +94,7 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
 
 
     // Handle Snackbar Close
-    const handleClose = (e, reason) => {
+    const handleClose = (e: Event | SyntheticEvent, reason: string) => {
         if (reason === 'clickaway') return;    
         setSnackOpen(false);
     };
@@ -99,7 +118,6 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
                 </Box>
                 <Box
                     component="form"
-                    
                     autoComplete="off"
                     onSubmit={handleSubmit}
                     sx={{my: 3, display: 'flex'}}
@@ -141,7 +159,7 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
                 open={snackOpen}
                 autoHideDuration={4000}
                 onClose={handleClose}
-                ><Alert variant="filled" severity={alert.severity}>{alert.message}</Alert></Snackbar>
+                ><Alert variant="filled" severity={alert.severity as AlertColor}>{alert.message}</Alert></Snackbar>
         </>
     )
 }

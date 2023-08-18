@@ -10,7 +10,6 @@ import Register from "./Components/Pages/Register";
 import User from "./Components/Pages/User";
 import Today from "./Components/Pages/Today";
 import Group from "./Components/Pages/Group";
-import History from "./Components/Pages/History";
 import Profile from "./Components/Pages/Profile";
 import './app.css'
 
@@ -47,7 +46,6 @@ function AppContent({theme}) {
               <Route index element={<Today />} />
               <Route path="today" element={<Today />} />
               <Route path="group" element={<Group />} />
-              <Route path="history" element={<History />} />
               <Route path="profile" element={<Profile />} />
             </Route>
           </Routes>

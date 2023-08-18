@@ -20,7 +20,6 @@ const Today = () => {
   const [filteredList, setFilteredList] = useState([])
   const [choices, setChoices] = useState(defaultChoices)
 
-
   // Get Today's Data
   const getToday = async () => {
     try {
@@ -34,7 +33,7 @@ const Today = () => {
 
   useEffect(() => {
     getToday()
-  }, [])
+  }, [user])
 
 
   // Filter Items
@@ -116,14 +115,14 @@ const Today = () => {
   // If user is not in a group, then redirect to the group page.
   useEffect(() => {
     if(!user.group) navigate('/user/group')
-  }, [])
+  }, [user])
 
   // If already submitted choices - display Result page.
   const submitted = today.selections.some((selection) => selection.member._id === user._id)
   if(submitted) return <Box sx={{p: 4}}><Results today={today} setToday={setToday} /></Box>
 
   return (
-    <Box sx={{p: 4}}>
+    <Box sx={{p: 2}}>
       <DragDropContext onDragEnd={onDragEnd}>
         <Grid container spacing={4}>
           <Grid item xs={12} lg={6}>
