@@ -29,8 +29,7 @@ interface Member {
 
 interface Selection {
     member: Member
-    name: String
-    type: String
+    selection: [{name: String, type: String}]
 }
 
 interface Today {
@@ -46,9 +45,7 @@ interface Today {
 
 interface ResultsProps {
     today: Today
-    setToday: (day: Today) => {
-
-    }
+    setToday: (day: Today) => {}
 }
 
 
@@ -90,7 +87,7 @@ const Results = ( { today, setToday }: ResultsProps) => {
                             <List
                                 sx={{bgcolor: theme.palette.primary.main}}
                                 subheader={
-                                    <ListSubheader component="div" id="nested-list-subheader"><Stack direction='row' gap={1} sx={{alignItems: 'center', py: 1}}><Avatar src={selection.member.pic} variant='square' />{selection.member.name}'s Choices:</Stack></ListSubheader>
+                                    <ListSubheader component="div" id="nested-list-subheader"><Stack direction='row' gap={1} sx={{alignItems: 'center', py: 1}}><Avatar src={String(selection.member.pic)} variant='square' />{selection.member.name}'s Choices:</Stack></ListSubheader>
                                 }>
                                 {selection.selection.map((item, j) => {
                                     return (
@@ -131,7 +128,7 @@ const Results = ( { today, setToday }: ResultsProps) => {
                 subheader={
                     <ListSubheader component="div" id="nested-list-subheader">Your Selections for Today</ListSubheader>
                 }>
-                {userSelection.selection.map((item: Selection, index: Number) => {
+                {userSelection?.selection.map((item: {type: String, name: String}, index) => {
                     return (
                         <ListItem key={index}>
                                 <ListItemIcon>

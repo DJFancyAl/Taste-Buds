@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, MouseEventHandler } from 'react';
 import { UserContext } from '../Context/UserContext';
 import { useTheme } from '@mui/material/styles';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
@@ -19,17 +19,46 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import axios from 'axios';
 
 
-const Selections = ( { choices, today, setToday } ) => {
+interface Member {
+    _id: String
+    name: String
+    username: String
+    pic: String
+}
+
+interface Selection {
+    member: Member
+    selection: [{name: String, type: String}]
+}
+
+interface Today {
+    _id: String
+    selections: [Selection]
+    group: {members: [Member]}
+    summary: {
+        top_choice: String
+        second_choice: String
+        explanation: String
+    }
+}
+
+interface SelectionsProps {
+    choices: [{name: String, type: String}]
+    today: Today
+    setToday: (data: Today) => {}
+}
+
+
+const Selections = ( { choices, today, setToday }: SelectionsProps ) => {
     // State
     const theme = useTheme()
     const { user } = useContext(UserContext)
     const [loading, setLoading] = useState(false)
 
     // Submit Choices
-    const handleSubmit = async (e) => {
-        e.preventDefault()
+    const handleSubmit = async () => {
         try {
-            const submitted = today.selections.some((selection) => selection.member === user.id)
+            const submitted = today.selections.some((selection) => selection.member._id === user._id)
             if(!submitted) {
                 setLoading(true)
                 const token = localStorage.getItem('token')

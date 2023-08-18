@@ -66,29 +66,25 @@ const BrandBar = () => {
   // State
   const navigate = useNavigate()
   const {darkMode, setDarkMode} = useContext(ThemeContext)
-  const {user, setUser} = useContext(UserContext)
+  const {user} = useContext(UserContext)
   const [open, setOpen] = useState(false)
   const [requests, setRequests] = useState(0)
 
   // Dark Mode Switch
   const handleSwitch = () => {
     setDarkMode(!darkMode)
-    localStorage.setItem('darkMode', !darkMode)
+    localStorage.setItem('darkMode', String(!darkMode))
   }
 
   // Handle Logout
   const logout = () => {
     localStorage.removeItem('token')
-    setUser(null)
     navigate('/')
   }
 
 
   // Toggle NavBar
-  const toggleDrawer = (e) => {
-      if (e.type === 'keydown' && (e.key === 'Tab' || e.key === 'Shift')) {
-        return;
-      }
+  const toggleDrawer = (e: React.MouseEvent<HTMLDivElement> | React.MouseEvent) => {
       setOpen(!open)
   };
 
@@ -122,7 +118,7 @@ const BrandBar = () => {
                   </Badge>
                 </IconButton>
               </Link>
-              <FormControlLabel onClick={handleSwitch} control={<MaterialUISwitch sx={{ ml:4, my: 1 }} defaultChecked />} />
+              <FormControlLabel label='' onClick={handleSwitch} control={<MaterialUISwitch sx={{ ml:4, my: 1 }} defaultChecked />} />
               </Toolbar>
           </AppBar>
           <NavBar open={open} toggleDrawer={toggleDrawer} logout={logout} />

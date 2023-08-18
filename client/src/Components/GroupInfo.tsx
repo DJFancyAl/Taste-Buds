@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext, SyntheticEvent } from 'react'
 import { UserContext } from '../Context/UserContext'
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
@@ -14,7 +14,7 @@ import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import Backdrop from '@mui/material/Backdrop';
 import JoinFullIcon from '@mui/icons-material/JoinFull';
@@ -25,7 +25,25 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import axios from 'axios';
 
-const GroupInfo = ( { group }) => {
+interface Member {
+  _id: String
+  username: string
+  name: string
+  bio: string
+  pic: string
+}
+
+interface GroupProps {
+  group: {
+    _id: String
+    description: String
+    type: String
+    members: [Member]
+    requests: [Number]
+  }
+}
+
+const GroupInfo = ( { group }: GroupProps) => {
   // State
   const theme = useTheme()
   const token = localStorage.getItem('token')
@@ -33,11 +51,11 @@ const GroupInfo = ( { group }) => {
   const [promptOpen, setPromptOpen] = useState(false)
   const [snackOpen, setSnackOpen] = useState(false);
   const [alert, setAlert] = useState({severity: 'success', message:''})
-  const [data, setData] = useState({members: [], requests: []})
+  const [data, setData] = useState({members: [], requests: [], description: '', type: ''})
   const {members, requests, description, type} = data
 
   // Handle Accept Request
-  const handleAccept = async (member) => {
+  const handleAccept = async (member: String) => {
     try {
       const response = await axios.get(`http://localhost:5000/groups/${group._id}/${member}`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setData(response.data)
@@ -50,9 +68,9 @@ const GroupInfo = ( { group }) => {
   }
 
   // Handle Reject Request
-  const handleReject = async (member) => {
+  const handleReject = async (member: String) => {
     try {
-      const removed = requests.filter((request) => request._id !== member)
+      const removed = requests.filter((request: Member) => request._id !== member)
       const response = await axios.put(`http://localhost:5000/groups/${group._id}`, {"requests": removed}, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setData({...data, requests: removed})
       setAlert({severity: 'success', message: 'Join Request Rejected.'})
@@ -79,9 +97,9 @@ const GroupInfo = ( { group }) => {
   // Show Members
   const showMembers = (
     <Stack direction='column' gap={4}>
-      {members.map((member) => {
+      {members.map((member: Member) => {
         return (
-          <Card key={member._id}>
+          <Card key={String(member._id)}>
             <CardContent>
               <Stack direction='row' gap={2} sx={{alignItems: 'center', pb: 1}}>
                 <Avatar alt={member.username} src={member.pic} variant="square" sx={{ width: 48, height: 48 }} />
@@ -102,13 +120,13 @@ const GroupInfo = ( { group }) => {
   // Show Requests
   const showRequests = (
     <List sx={{width: '100%', p: 0}}>
-      {requests.map((request) => {
+      {requests.map((request: Member) => {
         return (
           <ListItem
-            key={request._id}
+            key={String(request._id)}
             sx={{bgcolor: theme.palette.secondary.dark, color: theme.palette.primary.main, minWidth: '100%', borderTop: `1px solid ${theme.palette.primary.main}`}}
             secondaryAction={
-              <Box edge="end">
+              <Box>
                 <IconButton
                   aria-label="approve join"
                   sx={{backgroundColor: theme.palette.primary.main, color: theme.palette.secondary.main, "&:hover": {backgroundColor: theme.palette.primary.light}}}
@@ -118,7 +136,7 @@ const GroupInfo = ( { group }) => {
                 </IconButton>
                 <IconButton
                   aria-label="reject request"
-                  sx={{backgroundColor: 'darkred', color: theme.palette.background.light, marginLeft:2, "&:hover": {backgroundColor: '#B50000'}}}
+                  sx={{backgroundColor: 'darkred', color: theme.palette.info.main, marginLeft:2, "&:hover": {backgroundColor: '#B50000'}}}
                   onClick={() => handleReject(request._id)}
                   >
                   <ThumbDownIcon />
@@ -134,7 +152,7 @@ const GroupInfo = ( { group }) => {
   )
 
   // Handle Snackbar Close
-  const handleClose = (e, reason) => {
+  const handleClose = (e: Event | SyntheticEvent, reason: string) => {
     if (reason === 'clickaway') return;    
       setSnackOpen(false);
   };
@@ -169,7 +187,7 @@ const GroupInfo = ( { group }) => {
       </Typography>
       <Stack direction='row' gap={2} justifyContent='center' sx={{mx: 'auto', mb: 4}}>
         <a href={sendInvite}><Button variant="contained" endIcon={<AssignmentIndIcon />}>Invite Bud</Button></a>
-        <Button variant="contained" endIcon={<ExitToAppIcon />} sx={{bgcolor: 'darkred', color: theme.palette.background.light, "&:hover": {backgroundColor: '#B50000'}}} onClick={() => setPromptOpen(true)}>Leave Group</Button>
+        <Button variant="contained" endIcon={<ExitToAppIcon />} sx={{bgcolor: 'darkred', color: theme.palette.info.main, "&:hover": {backgroundColor: '#B50000'}}} onClick={() => setPromptOpen(true)}>Leave Group</Button>
       </Stack>
       <Divider />
       <Grid container spacing={5}>
@@ -188,7 +206,7 @@ const GroupInfo = ( { group }) => {
           open={snackOpen}
           autoHideDuration={4000}
           onClose={handleClose}
-      ><Alert variant="filled" severity={alert.severity}>{alert.message}</Alert></Snackbar>
+      ><Alert variant="filled" severity={alert.severity as AlertColor}>{alert.message}</Alert></Snackbar>
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={promptOpen}
@@ -197,7 +215,7 @@ const GroupInfo = ( { group }) => {
         <Box sx={{backgroundColor: theme.palette.primary.main, p: 5, border: `2px solid ${theme.palette.secondary.main}`, maxWidth: '600px'}}>
           Are you sure you want to leave this group? You will need to create a new request if you would like to rejoin...
           <Stack direction='row' gap={2} justifyContent='center' sx={{mx: 'auto', mt: 4}}>
-            <Button variant="contained" sx={{bgcolor: 'darkred', color: theme.palette.background.light, "&:hover": {backgroundColor: '#B50000'}}} onClick={handleLeave}>Yes - Leave</Button>
+            <Button variant="contained" sx={{bgcolor: 'darkred', color: theme.palette.info.main, "&:hover": {backgroundColor: '#B50000'}}} onClick={handleLeave}>Yes - Leave</Button>
             <Button variant="contained" sx={{bgcolor: theme.palette.primary.dark}}>Nevermind...</Button>
           </Stack>
         </Box>

@@ -14,12 +14,13 @@ import PeopleIcon from '@mui/icons-material/People';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { KeyboardEventHandler } from 'react';
 
 
 interface NavBarProps {
     open: boolean
-    toggleDrawer: () => {}
-    logout: () => {}
+    toggleDrawer: (e: React.MouseEvent<HTMLDivElement>) => void
+    logout: () => void
 }
 
 const NavBar = ( { open, toggleDrawer, logout}: NavBarProps) => {
@@ -31,7 +32,7 @@ const NavBar = ( { open, toggleDrawer, logout}: NavBarProps) => {
             open={open}
             onClose={toggleDrawer}
         >
-            <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer} onKeyDown={toggleDrawer} >
+            <Box component="div" sx={{ width: 250 }} role="presentation" onClick={(event: React.MouseEvent<HTMLDivElement>) => toggleDrawer(event)} >
                 <List component="nav" aria-label="NavBar Items" subheader={<ListSubheader sx={{textAlign: 'center'}}>Menu</ListSubheader>}>  
                     <Link to="/user/today" style={{ textDecoration: 'none', color: theme.palette.info.main }}>
                         <ListItem disablePadding>
