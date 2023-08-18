@@ -1,13 +1,12 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { useDropzone } from 'react-dropzone';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 import { UserContext } from '../Context/UserContext';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import FileBase64 from 'react-file-base64';
 import CircularProgress from '@mui/material/CircularProgress';
 import axios from 'axios';
 
@@ -18,14 +17,32 @@ const UpdateProfile = ( { updateProfile, loading, newUser}) => {
     const navigate = useNavigate()
     const {user} = useContext(UserContext)
     const [deleting, setDeleting] = useState(false)
-    const [formData, setFormData] = useState({username: '', name: '', bio: '', image: null});
+    const [formData, setFormData] = useState({username: '', name: '', bio: '', pic: null});
     const [file] = useState(null);
+    const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+        onDrop: (acceptedFiles) => {
+          // Convert the dropped file to base64
+          const reader = new FileReader();
+          reader.readAsDataURL(acceptedFiles[0]);
+          reader.onload = () => {
+            setFormData({...formData, pic: reader.result});
+          };
+        },
+      });
+      
 
     // Update User Profile
     const handleSubmit = async (e) => {
         e.preventDefault()
         updateProfile(formData)
     }
+
+    // For Photo Upload
+    const photo = acceptedFiles.map(file => (
+        <Box>
+          {file.path} - {file.size} bytes
+        </Box>
+    ));
 
     // Delete User
     const deleteUser = async () => {
@@ -41,7 +58,6 @@ const UpdateProfile = ( { updateProfile, loading, newUser}) => {
             console.log(e)
         }
     }
-
 
     // Sets form data to existing user
     useEffect(() => {
@@ -100,13 +116,15 @@ const UpdateProfile = ( { updateProfile, loading, newUser}) => {
                 rows={3}
                 onChange={(e) => setFormData({...formData, bio: e.target.value})}
                 />
-            <Stack direction='row' gap={4} sx={{backgroundColor: theme.palette.primary.main, alignItems: 'center', p: 2}}>
-                <Typography variant="body2">Image:</Typography>
-                <FileBase64
-                    multiple={ false }
-                    onDone={({base64}) => setFormData({...formData, pic: base64})}
-                    style={{ border: '1px solid #ccc', padding: '10px', borderRadius: '5px' }} />
-            </Stack>
+            
+            <Box sx={{bgcolor: theme.palette.primary.main, color: theme.palette.background.light, p:1}}>
+            <div {...getRootProps({className: 'dropzone'})}>
+                <input type="file" accept="image/*" {...getInputProps()} />
+                <Typography variant="subtitle">Drag 'n' drop an image here, or click to select a file</Typography>
+                <Typography variant="caption">{photo}</Typography>
+            </div>
+            </Box>
+
             <Box sx={{position: 'relative'}}>
                 <Button type='submit' variant="contained" fullWidth>Update User</Button>
                 {loading && <CircularProgress size={24} sx={{color: '#fff', position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px'}} />}
