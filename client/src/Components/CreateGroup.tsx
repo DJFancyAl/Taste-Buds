@@ -57,7 +57,7 @@ const CreateGroup = ( { userId, setUser }: CreateGroupProps ) => {
       const token = localStorage.getItem('token')
       if(token) {
         setLoading(true)
-        const response = await axios.post(`http://localhost:5000/groups`,
+        const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}groups`,
           {"member": userId, "description": description, "type": type},
           { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}}
         )
@@ -90,7 +90,7 @@ const CreateGroup = ( { userId, setUser }: CreateGroupProps ) => {
             textAlign: 'center'
         }}
       >
-        <Stack direction="column" spacing={2} sx={{my:4, mx: 'auto', minWidth: '600px', display: 'flex'}}>
+        <Stack direction="column" spacing={2} sx={{my:4, mx: 'auto', width: '100%', maxWidth: '600px', display: 'flex'}}>
           <FormControl fullWidth>
             <InputLabel id="group-type-label">Group Type</InputLabel>
             <Select

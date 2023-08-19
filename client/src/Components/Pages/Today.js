@@ -23,9 +23,11 @@ const Today = () => {
   // Get Today's Data
   const getToday = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const response  = await axios.get(`http://localhost:5000/days/${user.group._id}/today`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
-      setToday(response.data)
+      if(user.group._id) {
+        const token = localStorage.getItem('token')
+        const response  = await axios.get(`${process.env.REACT_APP_SERVER_URL}days/${user.group._id}/today`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+        setToday(response.data)
+      }
     } catch(err) {
       console.log(err)
     }

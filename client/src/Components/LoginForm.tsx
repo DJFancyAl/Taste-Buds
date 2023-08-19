@@ -22,7 +22,7 @@ const LoginForm = () => {
         e.preventDefault()
         setLoading(true)
         try {
-            const response = await axios.post(`http://localhost:5000/users/login`, formData, { headers: {'Content-Type': 'application/json'}})
+            const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}users/login`, formData, { headers: {'Content-Type': 'application/json'}})
             if(response.data) localStorage.setItem("token", response.data)
             navigate('/user/today')
         } catch (err) {

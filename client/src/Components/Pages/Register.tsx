@@ -36,7 +36,7 @@ const Register = () => {
         try {
             if (formData.password === formData.confirmPassword) {
                 setLoading(true)
-                const response = await axios.post('http://localhost:5000/users', formData, { headers: {'Content-Type': 'application/json'}})
+                const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}users`, formData, { headers: {'Content-Type': 'application/json'}})
                 if(response.data) localStorage.setItem("token", response.data)
                 navigate('/user/profile?new=true')
             } else {

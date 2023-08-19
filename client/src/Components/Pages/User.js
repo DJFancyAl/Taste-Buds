@@ -26,7 +26,7 @@ useEffect(() => {
 
     if(token) {
       try {
-        const response = await axios.get(`http://localhost:5000/users/user`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+        const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}users/user`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
         setUser(response.data)
       } catch(err) {
         if (err instanceof AxiosError) {

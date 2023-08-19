@@ -2,6 +2,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import path from 'path';
 require('dotenv').config()
 
 // Initialize App
@@ -12,6 +13,13 @@ app.use(cors({
     origin: 'http://localhost:3000',
   }));
 app.use(express.static('uploads'));
+
+
+// serve static front end in production mode
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, '../', 'client', 'build')));
+}
+
 
 // Home Route
 app.get('/', (req: express.Request, res: express.Response) => {
@@ -24,9 +32,9 @@ app.use('/groups', require('./controllers/groups'))
 app.use('/days', require('./controllers/days'))
 
 // Wildcard Route
-app.get('*', (req: express.Request, res: express.Response) => {
-    res.status(404).json({error: "Uh oh...that page doesn't exist!"})
-})
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../', 'client', 'build', 'index.html'));
+  });
 
 // Listener
 app.listen(process.env.PORT, () => {

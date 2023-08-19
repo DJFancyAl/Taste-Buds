@@ -64,7 +64,7 @@ router.get('/user', validateToken, async (req: CustomRequest, res: express.Respo
     }
     
     try {
-        const foundUser = await User.findById(req.user).select('-password').populate({path: 'group', select: 'requests'})
+        const foundUser = await User.findById(req.user).select('-password').populate({path: 'group', select: 'members requests'})
         res.status(200).json(foundUser);
     } catch(err) {
         res.status(400).json({error: "User not found..."});

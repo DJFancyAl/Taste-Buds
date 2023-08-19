@@ -62,7 +62,7 @@ const Results = ( { today, setToday }: ResultsProps) => {
     const deleteSelections = async () => {
         try {
             const token = localStorage.getItem('token')
-            const response = await axios.get(`http://localhost:5000/days/${today._id}/${user._id}`,{headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}days/${today._id}/${user._id}`,{headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
             setToday(response.data)
           } catch (err) {
             console.log(err)

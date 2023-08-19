@@ -54,10 +54,12 @@ const GroupInfo = ( { group }: GroupProps) => {
   const [data, setData] = useState({members: [], requests: [], description: '', type: ''})
   const {members, requests, description, type} = data
 
+  // console.log(members)
+
   // Handle Accept Request
   const handleAccept = async (member: String) => {
     try {
-      const response = await axios.get(`http://localhost:5000/groups/${group._id}/${member}`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+      const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}groups/${group._id}/${member}`, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setData(response.data)
       setAlert({severity: 'success', message: 'Join Request Accepted!'})
       setSnackOpen(true)
@@ -71,7 +73,7 @@ const GroupInfo = ( { group }: GroupProps) => {
   const handleReject = async (member: String) => {
     try {
       const removed = requests.filter((request: Member) => request._id !== member)
-      const response = await axios.put(`http://localhost:5000/groups/${group._id}`, {"requests": removed}, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+      const response = await axios.put(`${process.env.REACT_APP_SERVER_URL}groups/${group._id}`, {"requests": removed}, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setData({...data, requests: removed})
       setAlert({severity: 'success', message: 'Join Request Rejected.'})
       setSnackOpen(true)
@@ -85,7 +87,7 @@ const GroupInfo = ( { group }: GroupProps) => {
   // Handle Leave Group
   const handleLeave = async () => {
     try {
-      const response = await axios.delete(`http://localhost:5000/groups/${group._id}/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+      const response = await axios.delete(`${process.env.REACT_APP_SERVER_URL}groups/${group._id}/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
       setUser(response.data)
     } catch (err) {
       setAlert({severity: 'error', message: 'Leave Group failed...'})
@@ -97,7 +99,7 @@ const GroupInfo = ( { group }: GroupProps) => {
   // Show Members
   const showMembers = (
     <Stack direction='column' gap={4}>
-      {members.map((member: Member) => {
+      {members && members.map((member: Member) => {
         return (
           <Card key={String(member._id)}>
             <CardContent>
@@ -161,15 +163,18 @@ const GroupInfo = ( { group }: GroupProps) => {
   // Mailto Command
   const sendInvite = `
   mailto:?subject=Be My Bud | Taste Buds Meal App
-  &body=Join my group so we we can plan our meals together! Taste Buds is an app where we can select our desired meal options each day. It will help us make tough decisions and save us time! Visit this page to join: http://localhost:5000 %0D%0A%0D%0ASee you soon, Bud!
+  &body=Join my group so we we can plan our meals together! Taste Buds is an app where we can select our desired meal options each day. It will help us make tough decisions and save us time! Visit this page to join: http://tastebuds-env.eba-h82mfrx2.us-east-1.elasticbeanstalk.com %0D%0A%0D%0ASee you soon, Bud!
   `
 
   // Get Group Info
   useEffect(() => {
     const getGroup = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/groups/${group._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
-        setData(response.data)
+        if(group._id) {
+          const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}groups/${group._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+          console.log(response.data)
+          setData(response.data)
+        }
       } catch (err) {
         console.log(err)
       }

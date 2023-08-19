@@ -82,7 +82,7 @@ const UpdateProfile = ( { updateProfile, loading, newUser}: UpdateProfileProps) 
             if(token && user) {
                 if(user._id) {
                     setDeleting(true)
-                    const response = await axios.delete(`http://localhost:5000/users/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+                    const response = await axios.delete(`${process.env.REACT_APP_SERVER_URL}users/${user._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
                     if(response) {
                         localStorage.removeItem('token')
                         navigate('/')

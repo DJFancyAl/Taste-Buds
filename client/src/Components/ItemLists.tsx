@@ -52,7 +52,7 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
         setFilteredList(filteredList.filter(option => option !== item))
         setItems(items.filter(option => option !== item))
         try {
-            const response  = await axios.put(`http://localhost:5000/groups/${group._id}/items`,
+            const response  = await axios.put(`${process.env.REACT_APP_SERVER_URL}groups/${group._id}/items`,
             item, {headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
             setAlert({severity: 'success', message: 'Profile Updated!'})
             setSnackOpen(true)
@@ -80,7 +80,7 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
         e.preventDefault()
         
         try {
-            const response  = await axios.post(`http://localhost:5000/groups/${group._id}/items`,
+            const response  = await axios.post(`${process.env.REACT_APP_SERVER_URL}groups/${group._id}/items`,
             {'name': itemName, 'type': itemType},
             { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
             const newItem: Item = response.data

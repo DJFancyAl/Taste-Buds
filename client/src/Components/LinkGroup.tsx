@@ -61,7 +61,7 @@ const LinkGroup = ( { userId, newUser }: LinkGroupProps ) => {
         e.preventDefault()
         try {
             setLoading(true)
-            const response = await axios.get(`http://localhost:5000/users/search/${search}`,
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}users/search/${search}`,
             { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
 
             setBuds(response.data)
@@ -88,7 +88,7 @@ const LinkGroup = ( { userId, newUser }: LinkGroupProps ) => {
     const handleJoin = async (budId: String) => {
         try {
             setLoading(true)
-            const response = await axios.get(`http://localhost:5000/groups/request/${budId}/${userId}`,
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}groups/request/${budId}/${userId}`,
             { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
             setWaiting(true)
             setSearch('')
@@ -176,7 +176,7 @@ const LinkGroup = ( { userId, newUser }: LinkGroupProps ) => {
                     textAlign: 'center'
                 }}
             >
-                <Stack direction="row" spacing={2} sx={{my:4, mx: 'auto', bgColor: 'red', minWidth: '600px', display: 'flex'}}>
+                <Stack direction="row" spacing={2} sx={{my:4, mx: 'auto', width: '100%', display: 'flex', maxWidth: '600px'}}>
                     <TextField
                         type='text'
                         id="username"

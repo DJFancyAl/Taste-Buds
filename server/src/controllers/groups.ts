@@ -43,7 +43,7 @@ router.post('/', validateToken, async (req: express.Request, res: express.Respon
 // Get One Group
 router.get('/:id', validateToken, async (req: express.Request, res: express.Response) => {
     try {
-        const foundGroup = await Group.findById(req.params.id).populate({path: 'members', select: 'name username date bio pic'}).populate({path: 'requests', select: 'name username'}).select('-days')
+        const foundGroup = await Group.findById(req.params.id).populate({path: 'requests', select: 'name username'}).populate({path:'members', select: 'name username pic bio'}).select('-days')
         res.status(200).json(foundGroup)
     } catch (err) {
         res.status(400).json({error: err})

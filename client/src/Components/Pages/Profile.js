@@ -28,7 +28,7 @@ const Profile = () => {
             const token = localStorage.getItem('token')
             if(token) {
                 setLoading(true)
-                const response = await axios.put(`http://localhost:5000/users/${user._id}`, formData, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
+                const response = await axios.put(`${process.env.REACT_APP_SERVER_URL}users/${user._id}`, formData, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
                 setUser(response.data)
                 setLoading(false)
                 setAlert({severity: 'success', message: 'Profile Updated!'})
@@ -58,7 +58,7 @@ const Profile = () => {
                 />
                 <Box>
                     <Typography variant="h3">{user.name}</Typography>
-                    <Typography variant="subtitle1" gutterBottom>{user.username} joined on {format(inputDate, 'M/d/yyyy')}</Typography>
+                    {user.date && <Typography variant="subtitle1" gutterBottom>{user.username} joined on {format(inputDate, 'M/d/yyyy')}</Typography>}
                 </Box>
             </Stack>
             <Divider sx={{my:4}} />
