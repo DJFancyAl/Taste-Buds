@@ -6,6 +6,8 @@ The "Taste Buds" app was create an an example of a full-stack application AND to
 
 ### Get Started
 
+<img src="image.png" alt="Start Page" width="300" align="right" />
+
 Upon using the app for the first time - all users will be directed to the "Get Started" page. From here the user has two options - to register a new account or to log in with the form on the page.
 
 Previously registered users can login by entering their username and password into the fields - then clicking the "Login" button. Upon login the user will be directed to the "Today" page.
@@ -20,6 +22,8 @@ The profile page allows the user to view their details and make changes to their
 
 ### Group Page
 
+<img src="image-1.png" alt="Start Page" width="300" align="right" />
+
 The group page will look different depending on whether the user has already joined a group or not. When using this page for the first time - the user has the option to join an existing group or to create a new one. If they create their own group, then they have to option to invite other members to join the group.
 
 If they would like to join an existing group, then they must search for a member of that group. They can search either by using the name or username, then click to join the group. This will send a request.
@@ -30,13 +34,15 @@ If the user is already in a group, then they can view important group informatio
 
 This page is also dynamic and is where the action really happens. Upon arriving at this page - the user will see their meal options. They can add new options, filter by meal type, and drag options to the selection fields. Once the selections have been made - the page will change.
 
+<img src="image-2.png" alt="Start Page" width="800" align="center" />
+
 The user will now see a notification - indicating that the other users have not submitted results, or "Taste Buddy" will analyze the group's submissions and give the vital feedback.
 
 The next day, you may return to this page and start again.
 
 ## Demo
 
-A live demo of "Taste Buds" is available here:
+A live demo of "Taste Buds" is available here: http://tastebuds-env.eba-h82mfrx2.us-east-1.elasticbeanstalk.com/
 
 On this demo - a user may register to create an account, and perform all of the functions listed above. Please participate on the app by creating a group and choosing your meals!
 
@@ -79,7 +85,9 @@ Now it's time to run the front end - open another console and change into the /c
 
 The app has some known issues:
 
-- Come back to this.
+- The request notification mark does not disappear when a request is approved or rejected (until page reload)
+- The "Waiting to Join" message will disappear when the page reloads - even if the user is still waiting.
+- Dragging items from the selected list back to the available items list can cause duplicate items.
 
 ## API Documentation
 
