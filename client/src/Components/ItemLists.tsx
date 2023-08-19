@@ -2,6 +2,7 @@ import { FormEvent, SyntheticEvent, useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Droppable } from 'react-beautiful-dnd';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import FoodItem from './FoodItem';
 import Button from '@mui/material/Button';
@@ -108,7 +109,7 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
 
     return (
         <>
-            <Box sx={{height: '150px'}}>
+            <Box sx={{mb: 1, minHeight: '150px'}}>
                 <Box sx={{textAlign: 'center', mb:3}}>
                     <ButtonGroup variant="contained" aria-label="outlined primary button group" sx={{m: 'auto'}}>
                         <Button onClick={toggleFilters} sx={filteredTypes.includes('Takeout') ? {backgroundColor: theme.palette.primary.dark} : {}} value='Takeout'>Take Out</Button>
@@ -120,26 +121,32 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
                     component="form"
                     autoComplete="off"
                     onSubmit={handleSubmit}
-                    sx={{my: 3, display: 'flex'}}
-                    gap={1}
                     >
-                    <TextField id="itemname" label="Item Name" variant="filled" type='text' sx={{flexGrow: 1}} required value={itemName} onChange={(e) => setItemName(e.target.value)}/>
-                    <FormControl variant="filled" sx={{width: '150px', bgcolor: theme.palette.primary.main}}>
-                        <InputLabel id="demo-simple-select-label">Type</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label="Type"
-                            required
-                            value={itemType}
-                            onChange={(e) => setItemType(e.target.value)}
-                            >
-                            <MenuItem value='Takeout'><FastfoodIcon fontSize="small" sx={{mb: '-3px'}} />&nbsp;Takeout</MenuItem>
-                            <MenuItem value='Eat In'><DinnerDiningIcon fontSize="small" sx={{mb: '-3px'}} />&nbsp;Eat In</MenuItem>
-                            <MenuItem value='Dine Out'><LocalDiningIcon fontSize="small" sx={{mb: '-3px'}} />&nbsp;Dine Out</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <Button type='submit' variant="contained">Add Item</Button>
+                    <Grid container spacing={1} rowSpacing={1}>
+                        <Grid item xs={8} lg={6}>
+                            <TextField id="itemname" label="Item Name" variant="filled" type='text' sx={{width: '100%'}} required value={itemName} onChange={(e) => setItemName(e.target.value)}/>
+                        </Grid>
+                        <Grid item xs={4} lg={3}>
+                            <FormControl variant="filled" sx={{width: '100%', bgcolor: theme.palette.primary.main}}>
+                                <InputLabel id="demo-simple-select-label">Type</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Type"
+                                    required
+                                    value={itemType}
+                                    onChange={(e) => setItemType(e.target.value)}
+                                    >
+                                    <MenuItem value='Takeout'><FastfoodIcon fontSize="small" sx={{mb: '-3px'}} />&nbsp;Takeout</MenuItem>
+                                    <MenuItem value='Eat In'><DinnerDiningIcon fontSize="small" sx={{mb: '-3px'}} />&nbsp;Eat In</MenuItem>
+                                    <MenuItem value='Dine Out'><LocalDiningIcon fontSize="small" sx={{mb: '-3px'}} />&nbsp;Dine Out</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} lg={3}>
+                            <Button type='submit' variant="contained" sx={{m: 0, boxShadow: 0, borderRadius: 0, height: '100%', width: '100%'}}>Add Item</Button>
+                        </Grid>
+                    </Grid>
                 </Box>
             </Box>
 
