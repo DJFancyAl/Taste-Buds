@@ -54,7 +54,6 @@ const GroupInfo = ( { group }: GroupProps) => {
   const [data, setData] = useState({members: [], requests: [], description: '', type: ''})
   const {members, requests, description, type} = data
 
-  // console.log(members)
 
   // Handle Accept Request
   const handleAccept = async (member: String) => {
@@ -172,7 +171,6 @@ const GroupInfo = ( { group }: GroupProps) => {
       try {
         if(group._id) {
           const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}groups/${group._id}`, { headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}})
-          console.log(response.data)
           setData(response.data)
         }
       } catch (err) {

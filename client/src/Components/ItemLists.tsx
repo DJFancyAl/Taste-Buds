@@ -124,7 +124,7 @@ const ItemLists = ( { group, items, setItems, filteredTypes, setFilteredTypes, f
                     gap={1}
                     >
                     <TextField id="itemname" label="Item Name" variant="filled" type='text' sx={{flexGrow: 1}} required value={itemName} onChange={(e) => setItemName(e.target.value)}/>
-                    <FormControl variant="filled" sx={{width: '150px'}}>
+                    <FormControl variant="filled" sx={{width: '150px', bgcolor: theme.palette.primary.main}}>
                         <InputLabel id="demo-simple-select-label">Type</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
